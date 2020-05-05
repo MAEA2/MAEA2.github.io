@@ -1,0 +1,18 @@
+I"<h2 id="disqusとは">DISQUSとは</h2>
+
+<p>サイトにコメント欄を付けられるwebサービス。</p>
+
+<p>jekyllでサイトを作ってるけど、簡単に付けられたので試してみた。</p>
+
+<p>やり方は<code class="highlighter-rouge">jekyll</code>+<code class="highlighter-rouge">disqus</code>とかでググってもらえれば良い。</p>
+
+<h2 id="追記-20180408">追記 [2018/04/08]</h2>
+
+<p>DISQUSでMathjax使えたら良いなと思って導入しようとしてるけど、なんかうまくいかない。</p>
+
+<p>ここを参照している。</p>
+
+<ul>
+  <li><a href="https://www.checkmyworking.com/2012/01/how-to-get-beautifully-typeset-maths-on-your-blog/#disqus">How to get beautifully typeset maths on your blog</a></li>
+</ul>
+:ET

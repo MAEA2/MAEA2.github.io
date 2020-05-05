@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>正定値行列には平方根行列が存在することの証明 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="正定値行列には平方根行列が存在することの証明" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="きっかけは以下のツイートです。問題が解決したので、ここに書きます。" />
+<meta property="og:description" content="きっかけは以下のツイートです。問題が解決したので、ここに書きます。" />
+<link rel="canonical" href="http://localhost:4000/2018/05/20/positive-definite-matrix.html" />
+<meta property="og:url" content="http://localhost:4000/2018/05/20/positive-definite-matrix.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-05-20T00:00:00+09:00" />
+<script type="application/ld+json">
+{"datePublished":"2018-05-20T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/05/20/positive-definite-matrix.html"},"url":"http://localhost:4000/2018/05/20/positive-definite-matrix.html","description":"きっかけは以下のツイートです。問題が解決したので、ここに書きます。","headline":"正定値行列には平方根行列が存在することの証明","dateModified":"2018-05-20T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">正定値行列には平方根行列が存在することの証明</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-05-20T00:00:00+09:00" itemprop="datePublished">May 20, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>きっかけは以下のツイートです。問題が解決したので、ここに書きます。</p>
+
+<p>正定値な行列なんて対称行列しかないんやから、一般の場合なんか考えても意味ないやろ！って方はブラウザバックでお願いします。こういう細かいことが気になっちゃうという人はお進み下さい。</p>
+
+<p>数学の世界では、このようなことはもっと鮮やかに解決されていると思うのでもちろん車輪の再発明となっております。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">A: 正定値 なら A^(1/2)っていつも存在するんでしたっけ？</p>&mdash; まえあつ (@MAEA_2) <a href="https://twitter.com/MAEA_2/status/997637484925206528?ref_src=twsrc%5Etfw">2018年5月19日</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h1 id="正定値行列">正定値行列</h1>
+
+<p>正定値行列の定義です。</p>
+
+<div class="box">
+
+$A\in\mathbb{R}^{n\times n}$ が正定値行列であるとは
+
+すべての $\boldsymbol{x}\in\mathbb{R}^{n},\boldsymbol{x}\neq \boldsymbol{0}$ に対して $\boldsymbol{x}^\top A \boldsymbol{x} &gt;0$ が成立するということ
+
+</div>
+
+<p>ちなみに、$\boldsymbol{x}^\top A \boldsymbol{x} &gt;0$ ではなくて $\boldsymbol{x}^\top A \boldsymbol{x} \geq 0$ が常に成立する場合は半生定値行列というのでした。</p>
+
+<p>このとき $A^{1/2}$ すなわち $X^2＝A$ となるような正方行列$X$は存在するかと言うのが問題です。</p>
+
+<h1 id="正定値行列と固有値の関係">正定値行列と固有値の関係</h1>
+
+<p>次の補題が成り立ちます。</p>
+
+<div class="box">
+
+$A$ : 正定値行列　ならば　$A$ のすべての固有値の実部は正である。
+
+</div>
+
+<div class="proof">
+
+[証明]
+
+$A$ のある固有値 $\lambda=\mu+i\nu\,(\mu,\nu\in\mathbb{R})$ と対応する固有ベクトルの1つを $\boldsymbol{z}=\boldsymbol{x}+i\boldsymbol{y}\,(\boldsymbol{x},\boldsymbol{y}\in\mathbb{R}^n)$ とします。※実部と虚部をそれぞれ分けて書いています。
+
+証明の目標は　$\mu &gt; 0$ を示すことです。
+
+固有値、固有ベクトルの定義から
+
+
+<div class="scroll">
+$$
+\begin{align}
+&amp;(A-\lambda I_n)\boldsymbol{z}=\boldsymbol{0}\\
+\iff&amp;(A-(\mu+i\nu)I_n)(\boldsymbol{x}+i\boldsymbol{y})=\boldsymbol{0}\\
+\iff&amp;\begin{cases}
+(A-\mu I_n)\boldsymbol{x}+\nu y=\boldsymbol{0}\\
+(A-\nu I_n)\boldsymbol{y}-\nu\boldsymbol{x}=\boldsymbol{0}
+\end{cases}\\
+\end{align}
+$$
+</div>
+
+
+最後の2つの式それぞれに右から$\boldsymbol{x}^\top,\boldsymbol{y}^\top$を掛けて足すと
+
+<div class="scroll">
+$$
+\boldsymbol{x}^\top(A-\mu I_n)\boldsymbol{x}+\boldsymbol{y}^\top(A-\nu I_n)\boldsymbol{y}=
+-\nu(\boldsymbol{x}^\top\boldsymbol{y}-\boldsymbol{y}^\top\boldsymbol{x})=0
+$$
+</div>
+
+が成り立つので、これを $\mu$ について解くと
+
+<div class="scroll">
+$$
+\mu = \frac{\boldsymbol{x}^\top A \boldsymbol{x}+\boldsymbol{y}^\top A \boldsymbol{y}}{\boldsymbol{x}^\top \boldsymbol{x}+\boldsymbol{y}^\top\boldsymbol{y}}
+$$
+</div>
+
+左辺は $A$ の正定値性と固有ベクトルが零ベクトルでないこととから正となります。
+
+</div>
+
+<h1 id="正定値行列の平方根">正定値行列の平方根</h1>
+
+<p>次のような形の行列 $J_n(\lambda)$ (ジョルダン細胞) を定義しておきます。</p>
+
+<div class="scroll">
+
+$$
+
+J_{n}(\lambda )={\begin{pmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{pmatrix}}
+
+$$
+
+</div>
+
+<p>正定値行列 $A$ をジョルダン標準形をつかって次のように変形します。</p>
+
+<script type="math/tex; mode=display">A=P^{-1}JP</script>
+
+<p>ただし、$P$ は正則な行列で、 $J$ は</p>
+
+<div class="scroll">
+
+$$
+J=\begin{bmatrix}
+J_{n_1}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}(\lambda_k)
+\end{bmatrix}
+$$
+
+</div>
+
+<p>という形の行列です。ここで $\lambda_1,\ldots,\lambda_k$ は $A$の固有値です。</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>もし $J_{n_i}(\lambda_i)$ がすべて存在すれば、$A^{1/2}$ の平方根の1つとして[^1]:  $J^{1/2}_{n_i}(\lambda_i)$ は複数存在するはずなので、その組み合わせだけ、 $A$の平方根は存在するということになります。</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+A^{1/2}:=P^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) & &0  \\
+&\ddots&\\
+0&&J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}P %]]></script>
+
+<p>としてやれば、</p>
+
+<div class="scroll">
+
+$$
+
+(A^{1/2})^2=P^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}PP^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}P
+=P^{-1}JP=A
+
+$$
+
+</div>
+
+<p>平方根行列になっていることがわかります。</p>
+
+<p>これで問題は $A$のジョルダン標準形のジョルダンブロックに平方根行列が存在するかという問題まで変形できました。</p>
+
+<h1 id="正定値行列のジョルダン細胞の平方根行列">正定値行列のジョルダン細胞の平方根行列</h1>
+
+<p>先程の補題より $A$ が正定値行列の場合は すべての固有値 $\lambda_i$ について $\mathrm{Re}(\lambda_i) &gt; 0$　が成り立っている事がわかります。</p>
+
+<p>これより $\mathrm{Re}(\lambda)&gt;0$ となる $\lambda$ について</p>
+
+<div class="scroll">
+
+$$
+
+J_{n}(\lambda )={\begin{pmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{pmatrix}}
+
+$$
+
+</div>
+
+<p>が平方根行列を持てば良いことを示せば良いことがわかりました。</p>
+
+<p>まず、$n$が小さな値のときにどうなるか考えてみましょう。</p>
+
+<p>$n=1$のとき $J_1(\lambda)=\lambda^{1/2}$ とすれば良いです。[^2]: 複素数の範囲で考えると必ず平方根は存在します。</p>
+
+<p>今回はとりあえず、ジョルダン細胞の平方根行列が少なくとも1つは存在することが言えれば良いので、とりあえず $J_n(\lambda)^{1/2}$ が存在するときに $J_{n+1}(\lambda)^{1/2}$ が構成できないか考えてみましょう。</p>
+
+<p>行列のブロック同士の干渉しないパートを考えると次のような形</p>
+
+<div class="scroll">
+
+$$
+J_{n+1}(\lambda)^{1/2} = \begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}
+$$
+
+</div>
+
+<p>で置いたときに $\boldsymbol{b}_{n+1}\in \mathbb{C}^{n}$ が求まれば良さげです。</p>
+
+<p>2乗して$J_{n+1}(\lambda)$ になるという条件を満たさないといけないので、</p>
+
+<div class="scroll">
+
+$$
+
+\begin{align}
+
+&amp;\begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}
+\begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}\\
+=&amp;\begin{bmatrix}
+J_n(\lambda)&amp; J_{n+1}^{1/2}\boldsymbol{b}_{n+1}+\lambda^{1/2}\boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda\\
+\end{bmatrix}
+
+={\begin{bmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{bmatrix}}
+
+\end{align}
+
+$$
+
+
+
+</div>
+
+<p>が成り立っていないといけない。</p>
+
+<p>一番右端の列同士を比較することで</p>
+
+<script type="math/tex; mode=display">(J_n(\lambda)^{1/2}\boldsymbol+\lambda^{1/2} I_n){b}_{n+1}=\begin{bmatrix}
+0\\
+\vdots\\
+0\\
+1
+\end{bmatrix}</script>
+
+<div class="scroll">
+
+
+を満たす $\boldsymbol{b}_{n+1}$ が求まれば良いです。
+
+例えば$n+1=2$の場合でこの連立方程式を解いてみましょう。
+
+書いてみると、
+
+<div class="scroll">
+
+$$
+\begin{align}
+
+\label{renritu}
+
+\begin{bmatrix}
+J_1(\lambda)^{1/2}&amp; (J_1(\lambda)+\lambda^{1/2}I_1)\boldsymbol{b}_{2}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+
+\end{bmatrix}=\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
+
+\end{align}
+$$
+
+</div>
+
+
+$n=1$ のとき $J_1^{1/2}=\lambda^{1/2}$ だったので、
+
+
+$$
+\begin{bmatrix}
+
+\lambda^{1/2}&amp; (J_1(\lambda)^{1/2}+\lambda^{1/2})b^{(2)}_1\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+
+\end{bmatrix}=\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
+$$
+
+となります。
+
+ここで $\boldsymbol{b}_2=[b^{(2)}_1]$ と置きました。
+
+これは、簡単に解けて$b^{(2)}_1=(2\lambda^{1/2})^{-1}$
+
+です。ここで。$\mathrm{Re} \lambda &gt; 0$ なので $\lambda$ は非零であるというのがポイントです。
+
+</div>
+
+<p>これより、この形で求まる$J_2^{1/2}(\lambda)$ は上三角行列になっている事がわかります。
+もし$J_n(\lambda)^{1/2}$ が上三角行列なら、$J_n(\lambda)^{1/2}+\lambda^{1/2} I_n$ も上三角行列であるから、上の連立方程式 $\eqref{renritu}$ は掃き出された形になっているので、下の成分から方程式を解いていけば容易に解けることがわかります。</p>
+
+<p>これより $\boldsymbol{b}_{n+1}$ の存在が $n=1,2,\ldots$ で順次言えるので、固有値が非零の場合にジョルダン細胞には常に平方根行列が存在することが言えました。</p>
+
+<p>これより、正定値行列には必ず平方根行列が存在すること言えます。</p>
+
+<h1 id="半正定値行列の場合">半正定値行列の場合　</h1>
+
+<p>零固有値がでてくるので、方程式が解けない可能性があり、このアプローチそのままでは難しそうです。</p>
+
+<p>ちなみに、<code class="highlighter-rouge">Jordan</code>, <code class="highlighter-rouge">Positive definite</code> とかで調べると</p>
+
+<ul>
+  <li><a href="http://inf.ucv.ro/~ami/index.php/ami/article/download/848/534">Positive-semidefinite matrices and the Jordan totient function</a></li>
+</ul>
+
+<p>が出てきたので、読んでみたいと思います。</p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="https://math.stackexchange.com/questions/83134/does-non-symmetric-positive-definite-matrix-have-positive-eigenvalues">Does non-symmetric positive definite matrix have positive eigenvalues?</a></li>
+</ul>
+
+<h1 id="追記">追記</h1>
+
+<p>正定値な場合ではなく、非特異な場合(行列が正則な場合)で一般に成り立つ証明となっているのではというご指摘がありました。どうもありがとうございます。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">これ正定値性いらなくないですかね（非特異な場合の証明になってるような）</p>&mdash; 歩衣子 (@poipoi2) <a href="https://twitter.com/poipoi2/status/1001337737281077249?ref_src=twsrc%5Etfw">2018年5月29日</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>一般に行列の対数というものを考えると、すなわち</p>
+
+<script type="math/tex; mode=display">e^Z:=\sum_{i=1}^\infty \frac{Z^n}{n!}</script>
+
+<p>としたときに$A=e^Z$となるような$Z$が存在するかどうかを考えると、</p>
+
+<p>$A$が非特異な場合にはこれは存在するようです。</p>
+
+<p>詳しいStatementについては、<a href="https://epubs.siam.org/doi/pdf/10.1137/1.9780898717778.ch1">Theory of Matrix Functions</a>の Thereom 1.27を参照してください。</p>
+
+  </div><a class="u-url" href="/2018/05/20/positive-definite-matrix.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

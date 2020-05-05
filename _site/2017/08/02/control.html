@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>ラプラス変換の性質 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="ラプラス変換の性質" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ラプラス変換の定義 時間$t\geq 0$で定義された関数$f(t)$に対して" />
+<meta property="og:description" content="ラプラス変換の定義 時間$t\geq 0$で定義された関数$f(t)$に対して" />
+<link rel="canonical" href="http://localhost:4000/2017/08/02/control.html" />
+<meta property="og:url" content="http://localhost:4000/2017/08/02/control.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-08-02T00:00:00+09:00" />
+<script type="application/ld+json">
+{"datePublished":"2017-08-02T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/02/control.html"},"url":"http://localhost:4000/2017/08/02/control.html","description":"ラプラス変換の定義 時間$t\\geq 0$で定義された関数$f(t)$に対して","headline":"ラプラス変換の性質","dateModified":"2017-08-02T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">ラプラス変換の性質</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-08-02T00:00:00+09:00" itemprop="datePublished">Aug 2, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="ラプラス変換の定義">ラプラス変換の定義</h2>
+<p>時間$t\geq 0$で定義された関数$f(t)$に対して</p>
+
+<script type="math/tex; mode=display">\mathcal{L}[f(t)]=\int_0^\infty f(t)e^{-st}\,dt</script>
+
+<p>$s\in\mathbb{C}$は複素数で，$\mathcal{L}[f(t)]$が収束する範囲$D\subset\mathbb{C}$からとるとする．$D$ を$f$のラプラス変換$\mathcal{L}[f(t)]$の収束領域という．</p>
+
+<h2 id="ラプラス変換の性質">ラプラス変換の性質</h2>
+
+<h3 id="線形性">線形性</h3>
+
+<script type="math/tex; mode=display">\mathcal{L}[af+bg]=a\mathcal{L}[f]+b\mathcal{L}[g]</script>
+
+<h3 id="t領域での微分">$t$領域での微分</h3>
+
+<script type="math/tex; mode=display">\mathcal{L}[f^\prime]=s\mathcal{L}[f]-f(0)</script>
+
+<h3 id="t領域での積分">$t$領域での積分</h3>
+
+<script type="math/tex; mode=display">\mathcal{L}\left[\int_{0}^tf(\tau)\,d\tau\right]=\frac{1}{s}\mathcal{L}[f]</script>
+
+<h3 id="s領域での推移">$s$領域での推移</h3>
+
+<script type="math/tex; mode=display">\mathcal{L}[e^{-at}f(t)]=\mathcal{L}[f](s+a)</script>
+
+<h3 id="t領域での推移">$t$領域での推移</h3>
+<p>$f(t-a)=0\,(0&lt;t&lt;a)$ のとき</p>
+
+<script type="math/tex; mode=display">\mathcal{L}[f(t-a)]=e^{-sa}\mathcal{L}[f](s)</script>
+
+<h3 id="初期値定理">初期値定理</h3>
+
+<script type="math/tex; mode=display">\lim_{t\to 0}f(t)=\lim_{s\to\infty}s\mathcal{L}[f](s)</script>
+
+<h3 id="最終値定理">最終値定理</h3>
+
+<script type="math/tex; mode=display">\lim_{t\to \infty}f(t)=\lim_{s\to 0}s\mathcal{L}[f](s)</script>
+
+<h3 id="畳み込み積">畳み込み積</h3>
+
+<script type="math/tex; mode=display">\mathcal{L}\left[\int_{0}^t f(\tau)g(t-\tau)\,d\tau\right]=\mathcal{L}[f]\mathcal{L}[g]</script>
+
+  </div><a class="u-url" href="/2017/08/02/control.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

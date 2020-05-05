@@ -1,0 +1,50 @@
+I"�
+<p>いろいろなことをテストします。自分以外にあまり存在価値なさそう。</p>
+
+<h2 id="jekyllでスマホから長い数式を横スクロールで見れるようにする">Jekyllでスマホから長い数式を横スクロールで見れるようにする</h2>
+
+<h3 id="やりかた">やりかた</h3>
+
+<p>別にjekyllじゃなくてもいいと思うけども<code class="highlighter-rouge">_scss/_highlights.scss</code>のところに</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nc">.scroll</span> <span class="p">{</span>
+  <span class="nl">background-color</span><span class="p">:</span> <span class="m">#ffffff</span><span class="p">;</span>
+  <span class="nl">padding</span><span class="p">:</span> <span class="m">7px</span> <span class="m">7px</span> <span class="m">7px</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">12pt</span><span class="p">;</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">scroll</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>みたいにクラスを定義しておいて、該当の数式の部分を<code class="highlighter-rouge">&lt;div class="slide"&gt;</code>とかで囲む。
+スライドさせてるのは<code class="highlighter-rouge">overflow: scroll</code>のところなので、あとは好きにいじると良いと思う。</p>
+
+<p>ただ、理由は謎だけどもスマホでは<code class="highlighter-rouge">font-size</code>を指定しないと動かなかった。</p>
+
+<h3 id="例">例</h3>
+
+<p>下の円周率の100桁までの近似値の式はおそらくスマホで横にスクロールできるはず。</p>
+
+<p>iPhoneでしか確かめてないので、Androidとかでうまく行ってなかったら教えてほしい。</p>
+
+<div class="scroll">
+
+$$
+\pi\approx 3.1415926535 8979323846 2643383279 5028841971 6939937510 5820974944 5923078164 0628620899 8628034825 3421170679
+$$
+
+</div>
+
+<h2 id="youtubeとかのリンクを埋め込む">YouTubeとかのリンクを埋め込む</h2>
+
+<h3 id="やり方">やり方</h3>
+
+<p>YouTubeの所望の動画のページを開き、共有ボタン→埋め込みを選択すると埋め込みのhtmlソースが表示される。</p>
+
+<h3 id="例-1">例</h3>
+
+<p>埋め込みの動画は最近聞いている曲。とてもおしゃれ。</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/titVYMAB0SE?rel=0&amp;controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+:ET

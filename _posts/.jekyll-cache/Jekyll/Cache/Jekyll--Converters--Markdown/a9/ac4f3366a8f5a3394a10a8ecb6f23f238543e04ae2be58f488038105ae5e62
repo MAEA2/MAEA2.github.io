@@ -1,0 +1,326 @@
+I"c-<p>きっかけは以下のツイートです。問題が解決したので、ここに書きます。</p>
+
+<p>正定値な行列なんて対称行列しかないんやから、一般の場合なんか考えても意味ないやろ！って方はブラウザバックでお願いします。こういう細かいことが気になっちゃうという人はお進み下さい。</p>
+
+<p>数学の世界では、このようなことはもっと鮮やかに解決されていると思うのでもちろん車輪の再発明となっております。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">A: 正定値 なら A^(1/2)っていつも存在するんでしたっけ？</p>&mdash; まえあつ (@MAEA_2) <a href="https://twitter.com/MAEA_2/status/997637484925206528?ref_src=twsrc%5Etfw">2018年5月19日</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h1 id="正定値行列">正定値行列</h1>
+
+<p>正定値行列の定義です。</p>
+
+<div class="box">
+
+$A\in\mathbb{R}^{n\times n}$ が正定値行列であるとは
+
+すべての $\boldsymbol{x}\in\mathbb{R}^{n},\boldsymbol{x}\neq \boldsymbol{0}$ に対して $\boldsymbol{x}^\top A \boldsymbol{x} &gt;0$ が成立するということ
+
+</div>
+
+<p>ちなみに、$\boldsymbol{x}^\top A \boldsymbol{x} &gt;0$ ではなくて $\boldsymbol{x}^\top A \boldsymbol{x} \geq 0$ が常に成立する場合は半生定値行列というのでした。</p>
+
+<p>このとき $A^{1/2}$ すなわち $X^2＝A$ となるような正方行列$X$は存在するかと言うのが問題です。</p>
+
+<h1 id="正定値行列と固有値の関係">正定値行列と固有値の関係</h1>
+
+<p>次の補題が成り立ちます。</p>
+
+<div class="box">
+
+$A$ : 正定値行列　ならば　$A$ のすべての固有値の実部は正である。
+
+</div>
+
+<p>[証明]</p>
+
+<p>$A$ のある固有値 $\lambda=\mu+i\nu\,(\mu,\nu\in\mathbb{R})$ と対応する固有ベクトルの1つを $\boldsymbol{z}=\boldsymbol{x}+i\boldsymbol{y}\,(\boldsymbol{x},\boldsymbol{y}\in\mathbb{R}^n)$ とします。※実部と虚部をそれぞれ分けて書いています。</p>
+
+<p>証明の目標は　$\mu &gt; 0$ を示すことです。</p>
+
+<p>固有値、固有ベクトルの定義から</p>
+
+<div class="scroll">
+
+$$
+\begin{align}
+&amp;(A-\lambda I_n)\boldsymbol{z}=\boldsymbol{0}\\
+\iff&amp;(A-(\mu+i\nu)I_n)(\boldsymbol{x}+i\boldsymbol{y})=\boldsymbol{0}\\
+\iff&amp;\begin{cases}
+(A-\mu I_n)\boldsymbol{x}+\nu y=\boldsymbol{0}\\
+(A-\nu I_n)\boldsymbol{y}-\nu\boldsymbol{x}=\boldsymbol{0}
+\end{cases}\\
+
+\end{align}
+$$
+
+</div>
+
+<p>最後の2つの式それぞれに右から$\boldsymbol{x}^\top,\boldsymbol{y}^\top$を掛けて足すと</p>
+
+<div class="scroll">
+
+$$
+\boldsymbol{x}^\top(A-\mu I_n)\boldsymbol{x}+\boldsymbol{y}^\top(A-\nu I_n)\boldsymbol{y}=
+-\nu(\boldsymbol{x}^\top\boldsymbol{y}-\boldsymbol{y}^\top\boldsymbol{x})=0
+$$
+
+が成り立つので、これを $\mu$ について解くと
+
+$$
+\mu = \frac{\boldsymbol{x}^\top A \boldsymbol{x}+\boldsymbol{y}^\top A \boldsymbol{y}}{\boldsymbol{x}^\top \boldsymbol{x}+\boldsymbol{y}^\top\boldsymbol{y}}
+$$
+
+左辺は $A$ の正定値性と固有ベクトルが零ベクトルでないこととから正となります。
+
+</div>
+
+<h1 id="正定値行列の平方根">正定値行列の平方根</h1>
+
+<p>次のような形の行列 $J_n(\lambda)$ (ジョルダン細胞) を定義しておきます。</p>
+
+<div class="scroll">
+
+$$
+
+J_{n}(\lambda )={\begin{pmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{pmatrix}}
+
+$$
+
+</div>
+
+<p>正定値行列 $A$ をジョルダン標準形をつかって次のように変形します。</p>
+
+\[A=P^{-1}JP\]
+
+<p>ただし、$P$ は正則な行列で、 $J$ は</p>
+
+<div class="scroll">
+
+$$
+J=\begin{bmatrix}
+J_{n_1}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}(\lambda_k)
+\end{bmatrix}
+$$
+
+</div>
+
+<p>という形の行列です。ここで $\lambda_1,\ldots,\lambda_k$ は $A$の固有値です。</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>もし $J_{n_i}(\lambda_i)$ がすべて存在すれば、$A^{1/2}$ の平方根の1つとして[^1]:  $J^{1/2}_{n_i}(\lambda_i)$ は複数存在するはずなので、その組み合わせだけ、 $A$の平方根は存在するということになります。</p>
+
+\[A^{1/2}:=P^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}P\]
+
+<p>としてやれば、</p>
+
+<div class="scroll">
+
+$$
+
+(A^{1/2})^2=P^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}PP^{-1}\begin{bmatrix}
+J_{n_1}^{1/2}(\lambda_1) &amp; &amp;0  \\
+&amp;\ddots&amp;\\
+0&amp;&amp;J_{n_k}^{1/2}(\lambda_k)
+\end{bmatrix}P
+=P^{-1}JP=A
+
+$$
+
+</div>
+
+<p>平方根行列になっていることがわかります。</p>
+
+<p>これで問題は $A$のジョルダン標準形のジョルダンブロックに平方根行列が存在するかという問題まで変形できました。</p>
+
+<h1 id="正定値行列のジョルダン細胞の平方根行列">正定値行列のジョルダン細胞の平方根行列</h1>
+
+<p>先程の補題より $A$ が正定値行列の場合は すべての固有値 $\lambda_i$ について $\mathrm{Re}(\lambda_i) &gt; 0$　が成り立っている事がわかります。</p>
+
+<p>これより $\mathrm{Re}(\lambda)&gt;0$ となる $\lambda$ について</p>
+
+<div class="scroll">
+
+$$
+
+J_{n}(\lambda )={\begin{pmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{pmatrix}}
+
+$$
+
+</div>
+
+<p>が平方根行列を持てば良いことを示せば良いことがわかりました。</p>
+
+<p>まず、$n$が小さな値のときにどうなるか考えてみましょう。</p>
+
+<p>$n=1$のとき $J_1(\lambda)=\lambda^{1/2}$ とすれば良いです。[^2]: 複素数の範囲で考えると必ず平方根は存在します。</p>
+
+<p>今回はとりあえず、ジョルダン細胞の平方根行列が少なくとも1つは存在することが言えれば良いので、とりあえず $J_n(\lambda)^{1/2}$ が存在するときに $J_{n+1}(\lambda)^{1/2}$ が構成できないか考えてみましょう。</p>
+
+<p>行列のブロック同士の干渉しないパートを考えると次のような形</p>
+
+<div class="scroll">
+
+$$
+J_{n+1}(\lambda)^{1/2} = \begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}
+$$
+
+</div>
+
+<p>で置いたときに $\boldsymbol{b}_{n+1}\in \mathbb{C}^{n}$ が求まれば良さげです。</p>
+
+<p>2乗して$J_{n+1}(\lambda)$ になるという条件を満たさないといけないので、</p>
+
+<div class="scroll">
+
+$$
+
+\begin{align}
+
+&amp;\begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}
+\begin{bmatrix}
+J_n(\lambda)^{1/2}&amp; \boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+\end{bmatrix}\\
+=&amp;\begin{bmatrix}
+J_n(\lambda)&amp; J_{n+1}^{1/2}\boldsymbol{b}_{n+1}+\lambda^{1/2}\boldsymbol{b}_{n+1}\\
+\boldsymbol{0} &amp; \lambda\\
+\end{bmatrix}
+
+={\begin{bmatrix}\lambda &amp;1&amp;&amp;&amp;0\\&amp;\lambda &amp;1&amp;&amp;\\&amp;&amp;\ddots &amp;\ddots &amp;\\&amp;&amp;&amp;\lambda &amp;1\\0&amp;&amp;&amp;&amp;\lambda \\\end{bmatrix}}
+
+\end{align}
+
+$$
+
+
+
+</div>
+
+<p>が成り立っていないといけない。</p>
+
+<p>一番右端の列同士を比較することで</p>
+
+\[(J_n(\lambda)^{1/2}\boldsymbol+\lambda^{1/2} I_n){b}_{n+1}=\begin{bmatrix}
+0\\
+\vdots\\
+0\\
+1
+\end{bmatrix}\]
+
+<div class="scroll">
+
+
+を満たす $\boldsymbol{b}_{n+1}$ が求まれば良いです。
+
+例えば$n+1=2$の場合でこの連立方程式を解いてみましょう。
+
+書いてみると、
+
+<div class="scroll">
+
+$$
+\begin{align}
+
+\label{renritu}
+
+\begin{bmatrix}
+J_1(\lambda)^{1/2}&amp; (J_1(\lambda)+\lambda^{1/2}I_1)\boldsymbol{b}_{2}\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+
+\end{bmatrix}=\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
+
+\end{align}
+$$
+
+</div>
+
+
+$n=1$ のとき $J_1^{1/2}=\lambda^{1/2}$ だったので、
+
+
+$$
+\begin{bmatrix}
+
+\lambda^{1/2}&amp; (J_1(\lambda)^{1/2}+\lambda^{1/2})b^{(2)}_1\\
+\boldsymbol{0} &amp; \lambda^{1/2}
+
+\end{bmatrix}=\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
+$$
+
+となります。
+
+ここで $\boldsymbol{b}_2=[b^{(2)}_1]$ と置きました。
+
+これは、簡単に解けて$b^{(2)}_1=(2\lambda^{1/2})^{-1}$
+
+です。ここで。$\mathrm{Re} \lambda &gt; 0$ なので $\lambda$ は非零であるというのがポイントです。
+
+</div>
+
+<p>これより、この形で求まる$J_2^{1/2}(\lambda)$ は上三角行列になっている事がわかります。
+もし$J_n(\lambda)^{1/2}$ が上三角行列なら、$J_n(\lambda)^{1/2}+\lambda^{1/2} I_n$ も上三角行列であるから、上の連立方程式 $\eqref{renritu}$ は掃き出された形になっているので、下の成分から方程式を解いていけば容易に解けることがわかります。</p>
+
+<p>これより $\boldsymbol{b}_{n+1}$ の存在が $n=1,2,\ldots$ で順次言えるので、固有値が非零の場合にジョルダン細胞には常に平方根行列が存在することが言えました。</p>
+
+<p>これより、正定値行列には必ず平方根行列が存在すること言えます。</p>
+
+<h1 id="半正定値行列の場合">半正定値行列の場合　</h1>
+
+<p>零固有値がでてくるので、方程式が解けない可能性があり、このアプローチそのままでは難しそうです。</p>
+
+<p>ちなみに、<code class="highlighter-rouge">Jordan</code>, <code class="highlighter-rouge">Positive definite</code> とかで調べると</p>
+
+<ul>
+  <li><a href="http://inf.ucv.ro/~ami/index.php/ami/article/download/848/534">Positive-semidefinite matrices and the Jordan totient function</a></li>
+</ul>
+
+<p>が出てきたので、読んでみたいと思います。</p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="https://math.stackexchange.com/questions/83134/does-non-symmetric-positive-definite-matrix-have-positive-eigenvalues">Does non-symmetric positive definite matrix have positive eigenvalues?</a></li>
+</ul>
+
+<h1 id="追記">追記</h1>
+
+<p>正定値な場合ではなく、非特異な場合(行列が正則な場合)で一般に成り立つ証明となっているのではというご指摘がありました。どうもありがとうございます。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">これ正定値性いらなくないですかね（非特異な場合の証明になってるような）</p>&mdash; 歩衣子 (@poipoi2) <a href="https://twitter.com/poipoi2/status/1001337737281077249?ref_src=twsrc%5Etfw">2018年5月29日</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>一般に行列の対数というものを考えると、すなわち</p>
+
+\[e^Z:=\sum_{i=1}^\infty \frac{Z^n}{n!}\]
+
+<p>としたときに$A=e^Z$となるような$Z$が存在するかどうかを考えると、</p>
+
+<p>$A$が非特異な場合にはこれは存在するようです。</p>
+
+<p>詳しいStatementについては、<a href="https://epubs.siam.org/doi/pdf/10.1137/1.9780898717778.ch1">Theory of Matrix Functions</a>の Thereom 1.27を参照してください。</p>
+:ET

@@ -1,0 +1,98 @@
+I"q<h1 id="関数解析のイメージ-あくまでイメージ">関数解析のイメージ (あくまでイメージ)</h1>
+
+<p>久しぶりの投稿です。今年の前期は関数解析の講義を取りました。</p>
+
+<p>関数解析というのは文字通り<strong>関数の空間の性質</strong>を調べる理論です。もっと平たく言えば、関数をベクトルとみなした線形代数学と言えると思います。</p>
+
+<p>関数をベクトルをみなすとはどういうことでしょうか。ベクトルとは線形性を持つような対象のことです。つまり、和と定数倍について閉じている(= それらもまたベクトルになっている)ような対象のことでした。</p>
+
+<p>例えば実関数 $f,g$　に対しては和を　$(f+g)(x) = f(x) + g(x)$、 定数倍を $\alpha f(x) :=\alpha f(x)$ で定めると、こうやって定めた $f+g$ や $\alpha f$ も関数となっていることがわかります。このようにみると、関数はベクトルと思うことができます。</p>
+
+<p>線形代数では $\mathbb{R}^n$ 有限次元の空間 (有限個のベクトルで表現できる空間)を扱いますが、関数の空間はえてして無限次元の空間になります。</p>
+
+<p>それ故に、有限次元の空間とは少し違う性質も持っていますが、
+有限次元の幾何的な直感がそのまま成り立つ場合もあります。</p>
+
+<p>関数解析で主に議論の舞台となるのはヒルベルト空間と呼ばれる空間です。ヒルベルト空間というのは、完備性という性質を持った内積の定まった空間のことです。</p>
+
+<h1 id="凸射影定理">凸射影定理</h1>
+
+<p>凸射影定理とは次のような定理です。</p>
+
+<div class="box">
+
+<b>凸射影定理</b>
+
+$\mathcal{H}$ をヒルベルト空間とする。空でない閉凸集合 $C \subset \mathcal{H}$ に対して、
+
+$$
+\inf_{\boldsymbol{y} \in C}\|\boldsymbol{x}-\boldsymbol{y}\| = \|\boldsymbol{x}-P_C(\boldsymbol{x})\|
+$$
+
+となる唯一の点$P_C(\boldsymbol{x}) \in C$ が存在する。
+
+</div>
+
+<p>$\boldsymbol{x}\in C$ の場合は明らかに $P_C(\boldsymbol{x}) = \boldsymbol{x}$ となるので、$\boldsymbol{x}\notin C$ の場合を考えます。図にすると次のようになります。$C$の中で に $\boldsymbol{x}$ に最も「近い」$C$ の点は　$C$の最も $\boldsymbol{x}$ に出っ張ったところということです。直感的には当たり前ですが、一般のヒルベルト空間に対してもこのような直感的な結果が成り立つというのが非常に面白いところです</p>
+
+<p><img src="/images/convex_projection.png" alt="fig" />
+<strong>凸射影のイメージ</strong></p>
+
+<p>[証明]</p>
+
+<div class="scroll">
+
+$P_C(\boldsymbol{x})$ の存在を中線定理と $\mathcal{H}$ の完備性を使って示します。
+
+</div>
+
+<p>さらに次の結果も成り立ちます。</p>
+
+<div class="box">
+
+<b>凸射影の幾何的性質</b>
+
+$\boldsymbol{x}^\ast\in C$ に対して、
+
+ $\boldsymbol{x}^{\ast} = P_C(\boldsymbol{x})$  $\iff$ $\langle \boldsymbol{x} -\boldsymbol{x}^\ast, \boldsymbol{y}-\boldsymbol{x}^\ast \rangle \leq 0$
+
+ が成り立つ。
+
+</div>
+
+<p>これを図にすると有限次元では明らかに成り立ちそうです。$\boldsymbol{x}^\ast$ を始点とする２つのベクトル $\boldsymbol{x}-\boldsymbol{x}^\ast$ と $\boldsymbol{y}-\boldsymbol{x}^\ast$ が常に鈍角をなすということです。凸射影の唯一性から、凸射影はこの幾何条件から完全に特徴づけられます。</p>
+
+<p><img src="/images/proj_radian.png" alt="fig" />
+<strong>鈍角をなすイメージ</strong></p>
+
+<p>また凸射影は非拡張性という性質を持ちます。</p>
+
+<p>これは次のような性質です。</p>
+
+<div class="box">
+
+<b>凸射影の非拡張性</b>
+
+任意の $\boldsymbol{x},\boldsymbol{y}\in\mathcal{H}$ に対して
+
+$$
+\|P_C(\boldsymbol{x})-P_C(\boldsymbol{y})\|\leq \|\boldsymbol{x}-\boldsymbol{y}\|
+$$
+
+が成り立つ。
+
+</div>
+
+<p>つまり、射影によって距離が広がらないという性質です。これも図に表すと有限次元で成り立ちそうなことは直感的には明らかです。</p>
+
+<p>非拡張性は先ほど紹介した凸射影の幾何的特徴付けから導くことができます。</p>
+
+<p><img src="/images/nonexpantion.png" alt="fig" />
+<strong>非拡張性のイメージ</strong></p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="http://www.saiensu.co.jp/?page=book_details&amp;ISBN=ISBN978-4-901683-62-3">工学のための関数解析</a></li>
+</ul>
+:ET

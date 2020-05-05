@@ -1,0 +1,17 @@
+I"�<h2 id="mmdの定義">MMDの定義</h2>
+
+<p>MMDはカーネル法で登場する概念です。再生性を持つあるカーネル $k:\mathcal{X}\times\mathcal{X}\to\mathbb{R}$ に対してカーネル平均を次式で定義します。カーネル平均は定義の通り，$\mathcal{X}$ 上の実関数です。</p>
+
+\[m_{X}(\cdot)=\int k(\cdot, x)dP_X(x)\]
+
+<h2 id="mmdの性質">MMDの性質</h2>
+
+<p>工事中。</p>
+
+<h2 id="参考資料">参考資料</h2>
+
+<ul>
+  <li><a href="https://www.ism.ac.jp/~fukumizu/OsakaU2014/OsakaU_6kernelMean.pdf">カーネル法入門
+６．カーネル平均を用いたノンパラメトリック推論</a></li>
+</ul>
+:ET

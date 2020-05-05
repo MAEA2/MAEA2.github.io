@@ -1,0 +1,41 @@
+I"�<div class="box">
+確率変数 $X$ が区間 $[a,b]$ で値を取るとする。このとき $X$ は パラメータ $\sigma=\frac{b-a}{2}$ で sub-gaussianになる。
+</div>
+
+<p>[証明]</p>
+
+<p>$\psi(\lambda):=\log\mathbb{E}[e^{\lambda X}]$ と置くと。テイラーの定理より</p>
+
+\[\psi(\lambda)　= \psi(0) + \psi^\prime(0)\lambda + \frac{\psi^{\prime\prime}(c)}{2}\lambda^2\]
+
+<p>が成り立つ。ここで $\psi(0)=0, \psi^\prime(0)=\mathbb{E}[X]$ であるから、 $\sup_{\lambda\in\mathbb{R}}\psi^{\prime\prime}(\lambda)$ を評価すれば良い。</p>
+
+\[\mathbb{E}_\lambda[f(X)]:=\frac{\mathbb{E}[f(X)e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]}\]
+
+<p>と定めると、</p>
+
+\[\psi^{\prime\prime}(\lambda)=\mathbb{E}_\lambda[(X-\mathbb{E}_\lambda[X])^2]\]
+
+<p>と書ける。ここで $\lambda$ を固定して 実数 $t$ の二次関数 $\mathbb{E}_\lambda[(X-t)^2]$ を考える。</p>
+
+<p>この関数は、$t=\mathbb{E}_\lambda[X]$ のときに最小になることがわかる。</p>
+
+<p>したがって、</p>
+
+\[\mathbb{E}_\lambda[(X-\mathbb{E}_\lambda[X])^2] \leq \mathbb{E}_\lambda\left[\left(X-\frac{b+a}{2}\right)^2\right]
+\leq \frac{(b-a)^2}{4}\]
+
+<p>これより $\mu=\mathbb{E}[X], \sigma=\frac{b-a}{2}$ と置くと</p>
+
+\[\psi(\lambda) \leq  \mu\lambda + \frac{\sigma^2}{2}\lambda^2\]
+
+<p>が すべての $\lambda\in\mathbb{R}$ で成立するので、$X$ はsub-gaussianとなる。</p>
+
+<h1 id="参考">参考</h1>
+<p>次の本のExercise 2.4にあった問題。</p>
+
+<ul>
+  <li><a href="https://www.cambridge.org/core/books/highdimensional-statistics/8A91ECEEC38F46DAB53E9FF8757C7A4E">High-Dimensional Statistics
+A Non-Asymptotic Viewpoint</a></li>
+</ul>
+:ET

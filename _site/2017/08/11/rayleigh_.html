@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>レイリー商の性質 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="レイリー商の性質" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="レイリー商の定義" />
+<meta property="og:description" content="レイリー商の定義" />
+<link rel="canonical" href="http://localhost:4000/2017/08/11/rayleigh_.html" />
+<meta property="og:url" content="http://localhost:4000/2017/08/11/rayleigh_.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-08-11T00:00:00+09:00" />
+<script type="application/ld+json">
+{"datePublished":"2017-08-11T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/11/rayleigh_.html"},"url":"http://localhost:4000/2017/08/11/rayleigh_.html","description":"レイリー商の定義","headline":"レイリー商の性質","dateModified":"2017-08-11T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">レイリー商の性質</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-08-11T00:00:00+09:00" itemprop="datePublished">Aug 11, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="レイリー商の定義">レイリー商の定義</h2>
+
+<div class="box">
+
+$n$ 次実対称行列 $A$,　$\bm{x}\neq \bm{0}$ に対して
+
+$$
+R_A(\bm{x})=\frac{\bm{x}^\top A\bm{x}}{|\bm{x}|^2}
+$$
+
+をレイリー商という
+
+</div>
+
+<h3 id="レイリー商の幾何学的意味">レイリー商の幾何学的意味</h3>
+<p>$R_A(\bm{x})\bm{x}$ は $A\bm{x}$ の $\bm{x}$ の方向に沿った直交射影となる．下図はそのイメージ．</p>
+
+<p><img src="/images/figure/raileigh.svg" alt="fig" />
+<strong>図1：レイリー商による直交射影のイメージ図</strong></p>
+
+<h2 id="レイリー商の性質">レイリー商の性質</h2>
+
+<h4 id="固有値との関係">固有値との関係</h4>
+<div class="box">
+
+$A$ の固有値を $\lambda_1\leq\lambda_2\leq\ldots\ldots\leq\lambda_n$ ，
+対応する固有ベクトルを $\bm{v}_1,\ldots,\bm{v}_n $ とする． このとき以下が成立する．
+
+$$
+\begin{align}
+\lambda_1 \leq R_A(\bm{x}) \leq \lambda_n
+\label{1}
+\end{align}
+$$
+
+$\bm{x}\in\mathrm{span}(\bm{x}_r,\ldots,\bm{x}_s)$ であるとき
+
+$$
+\begin{align}
+\lambda_r \leq R_A(\bm{x}) \leq \lambda_s\, (1\leq r &lt;s\leq n)
+\label{2}
+\end{align}
+$$
+
+
+$$
+\begin{align}
+\label{3}
+\max_{\bm{x}\neq\bm{0}}R_A(\bm{x})=R_A(\bm{v}_n)=\lambda_n\\
+\label{4}
+\min_{\bm{x}\neq\bm{0}}R_A(\bm{x})=R_A(\bm{v}_1)=\lambda_1
+\end{align}
+$$
+
+
+</div>
+
+<h4 id="証明">証明</h4>
+
+<p>$\bm{x}=x_1\bm{v}_1+\ldots+x_n\bm{v}_n$ と展開する．対称行列の固有ベクトルは直交する<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>ので</p>
+
+<script type="math/tex; mode=display">R_A(\bm{x})=\lambda_1x_1^2+\ldots+\lambda_nx_n^2</script>
+
+<p>であるから $\eqref{1}$ が成立する．$\eqref{3},\eqref{4}$ も固有値の大小関係と上の式から導ける． $\eqref{1}$ の証明で  $\bm{x}=x_r\bm{v}_r+\ldots+x_s\bm{v}_s$ とおけば $\eqref{2}$ が $\eqref{1}$ と同様に示せる．</p>
+
+<h4 id="固有値に対する近似精度">固有値に対する近似精度</h4>
+
+<div class="box">
+
+$\lambda_\ast$ が単純固有値(単根としてあらわれる固有値)であるとき
+
+$$
+|R_A(\bm{x})-\lambda_\ast|\leq \frac{|A-\lambda\bm{x}|^2/|\bm{x}|^2}{\displaystyle\min_{\lambda_i \neq \lambda_\ast}|\lambda_\ast-\lambda_i|}
+$$
+
+</div>
+
+<h4 id="証明-1">証明</h4>
+
+<p>$A$は対称行列なので適当な直交行列 $Q$ を選ぶことで以下のように分解できる．成分表示で明示されてない成分はすべて $0$ を表すとする．</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+A=Q\begin{bmatrix}
+\lambda_\ast&\\
+&\large{D}
+\end{bmatrix}Q^\top %]]></script>
+
+<p>$D$ は $\lambda_\ast$ 以外の固有値を対角成分とする対角行列．</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+&A-\lambda_\ast I =Q\begin{bmatrix}
+0&\\
+&\large{D-\lambda_\ast I}
+\end{bmatrix}Q^\top\\
+=&\left(Q\begin{bmatrix}
+0&\\
+&\large{D-\lambda_\ast I}
+\end{bmatrix}Q^\top\right)\left(Q\begin{bmatrix}
+0&\\
+&\large{(D-\lambda_\ast I)^{-1}}
+\end{bmatrix} Q^\top\right)\left( Q\begin{bmatrix}
+0&\\
+&\large{(D-\lambda_\ast I)}
+\end{bmatrix}Q^\top\right)
+\end{align} %]]></script>
+
+<p>であるから</p>
+
+<script type="math/tex; mode=display">\bm{y}=(A-\lambda_\ast I)\bm{x}</script>
+
+<p>と置くと</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+|R_A(\bm{x})-\lambda_\ast|&=\left|\frac{\bm{x}(A-\lambda_\ast)\bm{x}}{|\bm{x}|^2}\right|\\
+&=\frac{\left|(Q^\top\bm{x})^\top\begin{bmatrix}
+0&\\
+&\large{(D-\lambda_\ast I)^{-1}}
+\end{bmatrix}(Q^\top\bm{y})\right|}{|\bm{x}|^2}\\
+&:=\frac{\left|(Q^\top\bm{y})^\top D_1(Q^\top\bm{y})\right|}{|\bm{x}|^2}
+\end{align} %]]></script>
+
+<p>とすると一般に
+$\bm{x}^\top A\bm{y}\leq|\bm{x}| \cdot|\bm{y}|\sqrt{\lambda_\max(A^\top A)}$  <sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup> であるから</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+|R_A(\bm{x})-\lambda_\ast|&=\frac{|(Q^\top\bm{y})^\top D_1(Q^\top\bm{y})|}{|\bm{x}|^2}\\
+&\leq \frac{|Q^\top\bm{y}|^2\sqrt{\lambda_\max(D_1^\top D_1)}}{|\bm{x}|^2}\\
+&=|\bm{y}|^2\frac{1/|\bm{x}|^2}{\displaystyle\min{|\lambda_\ast-\lambda_i|}_{\lambda_i\neq\lambda_\ast}}
+\end{align} %]]></script>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320018815">現代線形代数―分解定理を中心として― </a></li>
+</ul>
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="https://maea2.github.io/symmetry/">対称行列・交代行列の性質</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>$\bm{y}$ を固有ベクトルで展開し，計算を行うと得られる． <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div><a class="u-url" href="/2017/08/11/rayleigh_.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

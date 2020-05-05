@@ -1,0 +1,76 @@
+I"<h2 id="背景">背景</h2>
+
+<p>iCloudのリマインダーとメモ機能をずっと使っていたんですけど、いまいち使いづらいなと感じることが多くありました。</p>
+
+<p>最近ブラウザをChromeに改宗したり、iOSのカレンダーアプリからGoogle Calenderに改宗したりと宗旨変えをしているので、</p>
+
+<p>この際メモアプリも新しいものを探してみようと思ったところ、Google KeepというGoogle謹製のメモアプリがあることを知りました。</p>
+
+<p>ここ数日に渡ってGoogle Keepを使ってみたところ、あまりに便利で素晴らしかったので、紹介記事を書く次第です。</p>
+
+<p>あんまり参考にならないかもしれませんが、僕が便利だなと感じた機能や僕が便利だと思っている使い方を宣伝したいと思います。</p>
+
+<h2 id="google-keepとは">Google Keepとは</h2>
+
+<p>Googleの提供しているサービスの一つで端的に言えば多機能なメモ帳です。</p>
+
+<p>Google KeepはGoogleアカウントがあれば、誰でも利用できます。</p>
+
+<p>PC、スマホ、タブレット間で自動で同期が行われるので、いつでもどこでも作成したメモを確認できます。</p>
+
+<p>OSフリーってところもiCloudのメモ機能より良いところだと思います。</p>
+
+<h2 id="google-keepのui">Google KeepのUI</h2>
+
+<p>画像のように、付箋をボードに貼り付けたようなUIになっているのでやるべき作業や読むべきがすぐ一覧できます。</p>
+
+<p>各メモには色を付けることができるので、本当に付箋を貼っているような楽しい感覚でメモを取ることができます。</p>
+
+<p>また、Google Keepにはピン留め機能があり、作成したメモを固定しておくこともできます。</p>
+
+<p>やるべき作業のメモを作成して、ピン留めしておき、終わったら外すみたいなToDoのような使い方もできます。</p>
+
+<p>リマインダー機能もあるので、やるべき作業を知らせてもらうこともできます。</p>
+
+<p>リマインダー機能についてはもちろん、Google Calenderとの連携が行われています。</p>
+
+<p>本当に多機能で、素晴らしいですね。</p>
+
+<p><img src="/images/Google_Keep/UI.png" alt="Google KeepのUI" />
+<strong>Google Keepでやるべき作業が一覧できる</strong></p>
+
+<h2 id="google-keepで作業メモ">Google Keepで作業メモ</h2>
+
+<p>例えば、<code class="highlighter-rouge">読む</code>、<code class="highlighter-rouge">書く</code>、<code class="highlighter-rouge">買う</code>のようなタグを作成しておいて、付けておくと動作ごとの作業リストが作成できます。</p>
+
+<p><img src="/images/Google_Keep/read.png" alt="読むリスト" />
+<strong><code class="highlighter-rouge">読む</code>タグの付いたリスト</strong></p>
+
+<h2 id="google-keepでリーディングリスト">Google Keepでリーディングリスト</h2>
+
+<p>使い方としては例えば記事や論文を分野ごとに分類したりというようなことができます。</p>
+
+<p>論文のリンクを張っておけるので、後から参照するときに非常に便利ですね！</p>
+
+<p><img src="/images/Google_Keep/tag.png" alt="Google KeepのTag" />
+<strong>タグ機能でいい感じに分類</strong></p>
+
+<h2 id="google-keepで読書メモ">Google Keepで読書メモ</h2>
+
+<p>Google Keepの図表機能を利用すると、いい感じに読書メモが取れます。</p>
+
+<p>テキストはもちろん、写真や手書きのメモなども貼り付ける事ができます。</p>
+
+<p>僕はiPad Proを使っているので、この手書きメモの機能が非常に気持ちよく使えていい感じです。</p>
+
+<p><img src="/images/Google_Keep/prob_note.png" alt="確率論の読書メモ" />
+<strong>確率論の本の読書メモ</strong></p>
+
+<h2 id="google-keepとchromeの相性">Google KeepとChromeの相性</h2>
+
+<p>Google Keepには<a href="https://chrome.google.com/webstore/detail/google-keep-chrome-extens/lpcaedmchfhocbbapmcbpinfpgnhiddi?hl=ja">公式のChrome拡張</a>があるので、Chromeとの相性もバッチリです。</p>
+
+<p>今のところ、良いところばかりで、これといった不満はないです。</p>
+
+<p>ただ、まだ使い始めて数日しか経っていないので、１ヶ月くらい使うとまた印象がかわるかもしれませんが、今の所おすすめのアプリです。</p>
+:ET

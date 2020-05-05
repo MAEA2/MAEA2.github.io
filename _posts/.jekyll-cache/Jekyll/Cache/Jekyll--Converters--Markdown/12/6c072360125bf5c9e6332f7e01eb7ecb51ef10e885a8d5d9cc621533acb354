@@ -1,0 +1,33 @@
+I"a<p>主成分分析が何を解きたいかということを考えると自分のなかで一番しっくりくる説明を書いてみました。</p>
+
+<div class="box">
+
+平均が$\boldsymbol{0}$となる$p$次元のデータ$\{\boldsymbol{x}_{i}\}_{i=1}^N \subset \mathbb{R}^p$が与えられたときに、元のデータをなるべく損なわないような正規直交系(長さが1で互いに直交するようなベクトルの組)$\{\boldsymbol{u}_i\}_{i=1}^d\subset \mathbb{R}^p$ を見つけてくる。
+</div>
+
+<p>$p$次元ベクトルは1次独立なベクトルが$p$個あれば、それらの線型結合によって表現することができるので、ここでは $d &lt; p$ となる状況を考えています。つまり$p$次元のデータを$d$ 個の直交系を使うことにより「圧縮」して表現してやろうというわけです。</p>
+
+<p>ここで、「元のデータをなるべく損なわない」の定義は何なのかという疑問が生じますが、ここでは次のような定義を採用します。</p>
+
+<div class="box">
+
+$\{\boldsymbol{u}_i\}_{i=1}^d$で張られる空間にデータ $\{\boldsymbol{x}_i\}_{i=1}^N$ を直交射影したときの2乗距離の平均が最小になるようにとる。
+
+</div>
+
+<p>「損なわれなさ」に2乗距離を採用することに数学的な必然性はありません。ただ、最小2乗法などを考えるとわかるようにこうすると後の計算が楽になります。</p>
+
+<p>いま、ベクトル $\boldsymbol{x}\in\mathbb{R}^p$ を $({\boldsymbol{u}}<em>{i})</em>{i=1}^d$ で張られる空間に直交射影したベクトルを考えます。
+これは $\boldsymbol{U}\boldsymbol{U}^\top\boldsymbol{x}$ と表されます。
+( $\because$ 直交系で張られる空間に対する射影であることから、射影ベクトルは $\sum_{i=1}^d (\boldsymbol{u}<em>{i}^\top \boldsymbol{x}</em>{i}) \boldsymbol{u}<em>{i}$ とかけるため)。
+ここで $\boldsymbol{U} = [\boldsymbol{u}_1, \ldots, \boldsymbol{u}</em>{d}]\in \mathbb{R}^{p\times d}$ と置いています。</p>
+
+<p>これより、主成分分析は次のような問題を解くことになります。</p>
+
+\[\begin{align*}
+&amp;\text{minimize}\,\, \frac{1}{N}\sum_{i=1}^N \|\boldsymbol{x}_i - \boldsymbol{U}\boldsymbol{U}^\top \boldsymbol{x}_i\|^2\\
+&amp; \text{s.t.}\quad \boldsymbol{U}^\top \boldsymbol{U} = \boldsymbol{I}_d
+\end{align*}\]
+
+<p>よく主成分分析を説明するときに、データの散らばりが最大になるように分散共分散行列の固有値の大きなものから固有ベクトルを取っていけばよいというような説明がなされますが、これは主成分分析の気持ちとはややずれていると思います。2乗距離が最小になるような直交系をみつけてくるというような説明のほうがしっくりきます。</p>
+:ET

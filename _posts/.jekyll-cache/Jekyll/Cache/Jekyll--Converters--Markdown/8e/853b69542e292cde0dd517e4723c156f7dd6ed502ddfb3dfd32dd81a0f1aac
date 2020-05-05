@@ -1,0 +1,99 @@
+I"�<h1 id="動機">動機</h1>
+
+<p>Kaggleなどで話題となっているLightGBMなどのことを知るためにまず、勾配ブースティング決定木の勉強をした。</p>
+
+\[\DeclareMathOperator{\argmin}{arg\,min}\]
+
+<h2 id="決定木とは">決定木とは</h2>
+
+<p>決定木では特徴量 $x$ を元に排反な $J$ 個の分割領域 $\{R_j\}_{j=1}^J$ を構成し、</p>
+
+<p>$x \in R_j$ のとき、予測値 $f(x)=\gamma_j$ を返す。</p>
+
+<p>これをまとめて表現すると、$\Theta := \{R_j, \gamma_j \}_{j=1}^J$ として、</p>
+
+\[f(x) = T(x; ) := \sum_{j=1}^J \gamma_j I(x\in R_j)\]
+
+<p>とかける。</p>
+
+<h2 id="ブースティング木">ブースティング木</h2>
+
+<p>ブースティング木とは決定木をたくさん用意した予測モデルです。つまり</p>
+
+\[f_M(x) = \sum_{m=1}^M T(x;\Theta_m)\]
+
+<p>で予測するようなモデルです。<a href="https://maea2.github.io/adaboost">Adaboostの記事</a> でやったように $f_M$ を逐次最適化してみましょう。</p>
+
+<p>つまり、各 $\hat{\Theta}_m$ を推定するときに</p>
+
+\[\hat{\Theta}_m = \underset{\Theta_m}{\argmin} \sum_{i=1}^N L(y_i, f_{m-1}(x )+ T(x;\Theta_m))\]
+
+<p>で推定してやろうということです。</p>
+
+<h2 id="最急降下法">最急降下法</h2>
+
+<p>いま、関数　$f$ を使って予測したときの 損失関数の　$x$　についての条件付き期待値</p>
+
+\[\Phi(x, f) = \mathbb{E}_{x,y} \left[L(y, f(x))| x\right]\]
+
+<p>がわかっているとします。</p>
+
+<p>\Phi(f) を最小にするような予測関数 $f^\ast(x):=\argmin_f \Phi(f)$ がいま得たいものです。</p>
+
+<p>これを、</p>
+
+\[f_M(x)=\sum_{m=1}^M f_m(x)\]
+
+<p>の形で得ることを考えます。$f_1, f_2, f_3$ と少しづつ $f_i$ を増やして近似していくというイメージです。</p>
+
+<p>$f_i$ 一つ一つが弱学習器だと思ってください。</p>
+
+<p>いま、$f_1,\ldots,f_{m-1}$ まで得られているとします。</p>
+
+<p>いま、最急降下法を使って $f_m$ を計算することを考えます。</p>
+
+\[g_m(x) = \left.\frac{\partial \Phi(x^\prime, f_{m-1})}{\partial f(x^\prime)}\right|_{x^\prime=x}\]
+
+<p>と置くと、最急降下法によってもとまる $f_m$ は</p>
+
+\[f_m(x) = f_{m-1}(x) - \rho_m g_m(x)\]
+
+<p>となります。$\rho_m$ は $\Phi(x, f_m)$ が最小となるようにとります。</p>
+
+<h2 id="勾配ブースティングとは">勾配ブースティングとは</h2>
+
+<p>実際は $(x,y)$ の分布は未知であり、有限のサンプルデータ $\{(x_i,y_i)\}$ しか持っていません。</p>
+
+<p>なので、$g_m(x)$ の値は訓練データ点のところしかわかりません。よって、$\hat{\Theta}_m$ を推定するような問題を考えるとき、この方法は直接は使えません。</p>
+
+<p>次善の策を考えます。</p>
+
+<p>つまり有限個の勾配の値 $\{g_m(x_i)\}_{i=1}^N$ と $\{T(x_i;\Theta)\}$ が訓練データ点においてだけでも近くなるように</p>
+
+\[\tilde{\Theta}_m :=\underset{\Theta}{\argmin}\sum_{i=1}^N (-g_m(x_i)-T(x_i;\Theta))^2\]
+
+<p>で定めるという策です。</p>
+
+<h2 id="勾配ブースティング決定木">勾配ブースティング決定木</h2>
+
+<p>以上を踏まえて勾配ブースティング決定木の最適化アルゴリズムは次のようになります。</p>
+
+<p>(b)の部分が勾配情報との近くなるようにしている部分です。</p>
+
+<p><img src="/images/gbdt.png" alt="" />
+<strong>勾配ブースティング決定木のアルゴリズム (カステラ本のp361より引用)</strong></p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ul>
+  <li>
+    <p><a href="https://statweb.stanford.edu/~jhf/ftp/trebst.pdf">Greedy function approximation a gradient boosting machine</a></p>
+  </li>
+  <li>
+    <p><a href="http://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of
+Statistical Learning</a></p>
+  </li>
+</ul>
+
+<p></p>
+:ET

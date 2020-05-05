@@ -1,0 +1,100 @@
+I"<h1 id="adaboostとは">Adaboostとは</h1>
+
+<p>Adaboostは単純な分類器(弱学習器)をたくさん集めて、分類モデルを学習するときのアルゴリズムの一つです。</p>
+
+<p>いま、$Y\in\{-1,1\}$ を正解ラベル、$X\in\mathcal{X}$ を特徴量とする2値分類問題を考えます。</p>
+
+<p>$G_m:\mathcal{X}\to\{-1,1\}$ となる分類器を$M$個(m=1,2,\ldots,M)用意します。</p>
+
+<p>これらを用いて分類器 $G(x)$ を</p>
+
+\[G(x)=\mathrm{sign}\left(\sum_{m=1}^M \alpha_mG_m(x)\right)\]
+
+<p>で作ることを考えます。</p>
+
+<p>訓練データ ${x_i,y_i}_{i=1}^N\subset \{-1,1\}\times\mathcal{X}$ が得られているとします。</p>
+
+<p>このとき、$\{G_m\}<em>{m=1}^M, \{\alpha_m\}</em>{m=1}^M$ を学習するのが目標です。</p>
+
+<p>Adaboostは次のようなアルゴリズムです。</p>
+
+<p><img src="/images/adaboost.png" alt="fig" />
+<strong>Adaboostのアルゴリズム(カステラ本p339より引用)</strong></p>
+
+<p>Adaboostでは各訓練データに対して重み$w_i$を $m$ について逐次更新します。各 $m$ で $w_i$ に従った重み付きのフィッティングを行い $G_m$ を決定します。</p>
+
+<p>イメージとしては、前回で誤分類したデータに対しては重みを重く、正解したデータに対しては重みは変えないというような感じで $w_i$ を決定しています。</p>
+
+<h1 id="alpha_m-の根拠">$\alpha_m$ の根拠</h1>
+
+<p>$w_i$ を更新する際に $\exp(\alpha_m\cdot I(y_i\neq G_m(x_i)))$ 倍していますがこれにはどんな根拠があるのでしょうか。実は指数損失の最小化を考えると、自然とこの値が導かれるというのが今日これから書く内容です。</p>
+
+<h1 id="指数損失の最小化から-alpha_m-を出す">指数損失の最小化から $\alpha_m$ を出す</h1>
+
+<p>指数損失とは</p>
+
+\[\exp(-yG(x))\]
+
+<p>で定義される損失です。</p>
+
+<p>いま</p>
+
+\[f_m(x) := \sum_{i=1}^m \beta_i G_i(x)\]
+
+<p>と定めて、各 $m$ に対して、</p>
+
+\[(\beta_m, G_m)　:= \mathrm{argmin}_{\beta, G} \sum_{i=1}^N \exp(-y_i(f_{m-1}(x_i)+\beta G(x_i)))\]
+
+<p>で逐次的に $(\beta_m, G_m)$ を決定していくことを考えます。</p>
+
+<p>$w_i^{(m)}:=\exp(-y_if_{m-1}(x_i))$ と置くと、</p>
+
+\[(\beta_m, G_m)　:= \mathrm{argmin}_{\beta, G} \sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))\]
+
+<p>と書き換える事ができます。$(\beta_m, G_m)$　は指数損失の重み付き和を最小にするように決定しようというわけです。</p>
+
+<p>ここで指数損失の重み付き和について次のような書き換えを行います。</p>
+
+<div class="slide">
+
+$$
+\begin{align}
+&amp;\sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))\\
+=&amp;\sum_{y_i=G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i)) +
+\sum_{y_i\neq G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i)))\\
+=&amp;\sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))(1-I(y_i\neq G_m(x_i))) +
+\sum_{y_i\neq G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i))I(y_i\neq G_m(x_i))\\
+=&amp;(e^{\beta}+e^{-\beta})\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i)) + \sum_{i=1}^N w_i^{(m)}e^{-\beta}
+\end{align}
+$$
+
+</div>
+
+<p>これより $G_m$は $\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))$ を最小にするように決めれば良いことがわかります。そのように決定した $G_m$ を代入し、それを $\beta$ について最小化するような $\beta$ を求めれば $\beta_m$ も決定します。</p>
+
+<p>上の式を $\beta$ について偏微分して整理すると</p>
+
+\[e^{2\beta} = \frac{\sum_{i=1}^N w_i^{(m)}(1-I(y_i\neq G_m(x_i)))}{\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))}\]
+
+<p>となります。いま重み付き誤差率 $\mathrm{err}_m$ を</p>
+
+\[\mathrm{err}_m = \frac{\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}\]
+
+<p>で定めると</p>
+
+\[\begin{align}
+&amp;e^{2\beta} = \frac{1-\mathrm{err}_m}{\mathrm{err}_m}\\
+&amp;\therefore \beta_m = \frac{1}{2} \log\left( \frac{1-\mathrm{err}_m}{\mathrm{err}_m}\right)
+\end{align}\]
+
+<p>となります。$\alpha = 2\beta_m$ と置けば、Adaboostの $\alpha_m$ が出てきました。</p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="http://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of
+Statistical Learning 10章</a></li>
+</ul>
+
+<p></p>
+:ET

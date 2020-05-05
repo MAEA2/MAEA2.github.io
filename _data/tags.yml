@@ -1,0 +1,32 @@
+- slug: github-pages
+  name: GitHub Pages
+
+- slug: github
+  name: GitHub
+
+- slug: math
+  name: Math
+
+- slug: statistics
+  name: Statistics
+
+- slug: machine-learning
+  name: Machine Learning
+
+- slug: python
+  name: Python
+
+- slug: jekyll
+  name: Jekyll
+
+- slug: html
+  name: HTML
+
+- slug: css
+  name: css
+
+- slug: numerical_analysis
+  name: Numerical Analysis
+
+- slug: Google_Keep
+  name: Google Keep
