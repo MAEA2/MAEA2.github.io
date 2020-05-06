@@ -49,7 +49,7 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Jekyllで枠を定義する | maea2 blog</title>
-<meta name="generator" content="Jekyll v3.8.6" />
+<meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="Jekyllで枠を定義する" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="動機 Jekyllはmarkdownで記事が書けるのですごい便利なんですが，エンジニア仕様って感じなので，コードブロックは簡単に書けるのですが，数学の定義や定理を述べるときにボックスで囲んだりしたいというときに困ります．そこで適当にcssでボックス定義してから，markdownで書くときにdiv要素とかでかこんでとclass指定しようかと思います．他にいい方法が思いつかなかったのでとりあえずはこれで間に合わせようかと思います…もっといい方法あると思うので誰か教えて欲しい．" />
@@ -60,7 +60,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-08-09T00:00:00+09:00" />
 <script type="application/ld+json">
-{"datePublished":"2017-08-09T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/09/cssbox.html"},"url":"http://localhost:4000/2017/08/09/cssbox.html","description":"動機 Jekyllはmarkdownで記事が書けるのですごい便利なんですが，エンジニア仕様って感じなので，コードブロックは簡単に書けるのですが，数学の定義や定理を述べるときにボックスで囲んだりしたいというときに困ります．そこで適当にcssでボックス定義してから，markdownで書くときにdiv要素とかでかこんでとclass指定しようかと思います．他にいい方法が思いつかなかったのでとりあえずはこれで間に合わせようかと思います…もっといい方法あると思うので誰か教えて欲しい．","headline":"Jekyllで枠を定義する","dateModified":"2017-08-09T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2017/08/09/cssbox.html","headline":"Jekyllで枠を定義する","dateModified":"2017-08-09T00:00:00+09:00","datePublished":"2017-08-09T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/09/cssbox.html"},"description":"動機 Jekyllはmarkdownで記事が書けるのですごい便利なんですが，エンジニア仕様って感じなので，コードブロックは簡単に書けるのですが，数学の定義や定理を述べるときにボックスで囲んだりしたいというときに困ります．そこで適当にcssでボックス定義してから，markdownで書くときにdiv要素とかでかこんでとclass指定しようかと思います．他にいい方法が思いつかなかったのでとりあえずはこれで間に合わせようかと思います…もっといい方法あると思うので誰か教えて欲しい．","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -96,7 +96,7 @@
 <h2 id="方法">方法</h2>
 
 <p>1.
-cssで適当にボックスを定義する．例えば以下のcssを自分のページの<code class="highlighter-rouge">style.css</code>とかに追記する．</p>
+cssで適当にボックスを定義する．例えば以下のcssを自分のページの<code class="language-plaintext highlighter-rouge">style.css</code>とかに追記する．</p>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.box</span> <span class="p">{</span>
   <span class="nl">background-color</span><span class="p">:</span> <span class="m">#efefef</span><span class="p">;</span>

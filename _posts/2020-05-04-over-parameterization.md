@@ -92,6 +92,14 @@ $$
 
 ## [2]の論文の設定
 
+実は[2]の論文で$L(\boldsymbol{W},\boldsymbol{a})$の挙動の式が得られている。[2]では高い確率で
+
+$$
+L(\boldsymbol{W},\boldsymbol{a})\approx\frac{1}{2}\|(\boldsymbol{I}-\eta\boldsymbol{H}^\infty)^k\boldsymbol{y}\|_2^2
+$$
+
+が成り立つことが示されている。
+
 ## [2]の論文のキモ
 
 ## [2]の論文の主張

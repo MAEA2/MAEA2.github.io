@@ -49,7 +49,7 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Jekyllで図にキャプションを付ける | maea2 blog</title>
-<meta name="generator" content="Jekyll v3.8.6" />
+<meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="Jekyllで図にキャプションを付ける" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Jekyllで図にキャプション付けたい．" />
@@ -60,7 +60,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-08-12T00:00:00+09:00" />
 <script type="application/ld+json">
-{"datePublished":"2017-08-12T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/12/caption.html"},"url":"http://localhost:4000/2017/08/12/caption.html","description":"Jekyllで図にキャプション付けたい．","headline":"Jekyllで図にキャプションを付ける","dateModified":"2017-08-12T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2017/08/12/caption.html","headline":"Jekyllで図にキャプションを付ける","dateModified":"2017-08-12T00:00:00+09:00","datePublished":"2017-08-12T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/12/caption.html"},"description":"Jekyllで図にキャプション付けたい．","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -102,7 +102,7 @@
   <li>markdownで</li>
 </ol>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![fig_name](fig_path)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![fig_name](fig_path)
 **fig_caption**
 </code></pre></div></div>
 
@@ -113,16 +113,16 @@
 <span class="nt">&lt;strong&gt;</span>fig_caption<span class="nt">&lt;/strong&gt;</span>
 <span class="nt">&lt;/p&gt;</span>
 </code></pre></div></div>
-<p>のようになっている．ここで<code class="highlighter-rouge">img</code>タグと<code class="highlighter-rouge">strong</code>タグがこの順番でならんでいるのがポイント．</p>
+<p>のようになっている．ここで<code class="language-plaintext highlighter-rouge">img</code>タグと<code class="language-plaintext highlighter-rouge">strong</code>タグがこの順番でならんでいるのがポイント．</p>
 
 <ol>
-  <li><code class="highlighter-rouge">style.scss</code>のところで<code class="highlighter-rouge">img</code>タグと<code class="highlighter-rouge">strong</code>タグが並列してきた場合のスタイルを追記しておく．例えば</li>
+  <li><code class="language-plaintext highlighter-rouge">style.scss</code>のところで<code class="language-plaintext highlighter-rouge">img</code>タグと<code class="language-plaintext highlighter-rouge">strong</code>タグが並列してきた場合のスタイルを追記しておく．例えば</li>
 </ol>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">img</span> <span class="o">+</span> <span class="nt">strong</span> <span class="p">{</span><span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span> <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;}</span>
 </code></pre></div></div>
 
-<p>のように書く．<code class="highlighter-rouge">img + strong {}</code>の<code class="highlighter-rouge">{}</code>の部分は好きなデザインに変更すればよい．また別に<code class="highlighter-rouge">strong</code>要素でなくても他の要素でも同じようなことができるはず．</p>
+<p>のように書く．<code class="language-plaintext highlighter-rouge">img + strong {}</code>の<code class="language-plaintext highlighter-rouge">{}</code>の部分は好きなデザインに変更すればよい．また別に<code class="language-plaintext highlighter-rouge">strong</code>要素でなくても他の要素でも同じようなことができるはず．</p>
 
 <h2 id="感想">感想</h2>
 

@@ -49,7 +49,7 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>JekyllでGoogle Fontsを利用する | maea2 blog</title>
-<meta name="generator" content="Jekyll v3.8.6" />
+<meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="JekyllでGoogle Fontsを利用する" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="背景 MacやiPhoneにはヒラギノフォントやhelveticaが入っているのでWebページが綺麗に表示されていいのですが，Windowsにはこれらのフォントは入っていないので違うものに置き換わってしまいます．またブラウザの設定によっても置き換わってしまうことがあります．" />
@@ -60,7 +60,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-07-29T00:00:00+09:00" />
 <script type="application/ld+json">
-{"datePublished":"2017-07-29T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/07/29/googlefont.html"},"url":"http://localhost:4000/2017/07/29/googlefont.html","description":"背景 MacやiPhoneにはヒラギノフォントやhelveticaが入っているのでWebページが綺麗に表示されていいのですが，Windowsにはこれらのフォントは入っていないので違うものに置き換わってしまいます．またブラウザの設定によっても置き換わってしまうことがあります．","headline":"JekyllでGoogle Fontsを利用する","dateModified":"2017-07-29T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2017/07/29/googlefont.html","headline":"JekyllでGoogle Fontsを利用する","dateModified":"2017-07-29T00:00:00+09:00","datePublished":"2017-07-29T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/07/29/googlefont.html"},"description":"背景 MacやiPhoneにはヒラギノフォントやhelveticaが入っているのでWebページが綺麗に表示されていいのですが，Windowsにはこれらのフォントは入っていないので違うものに置き換わってしまいます．またブラウザの設定によっても置き換わってしまうことがあります．","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -100,14 +100,14 @@
 <p>今回導入したのがNoto Sans Japaneseというフォントだったのでこれを例に説明します．<a href="https://googlefonts.github.io/japanese/#notosansjapanese">Google Fonts + Japanese Early Access</a>にhtmlとcssのサンプルがあるので，これ見て適当なものを選べばいいと思います．</p>
 
 <ol>
-  <li><code class="highlighter-rouge">_layout/default.html</code>のヘッダ(<code class="highlighter-rouge">&lt;head&gt;</code>と<code class="highlighter-rouge">&lt;/head&gt;</code>の間)に以下を追記します．</li>
+  <li><code class="language-plaintext highlighter-rouge">_layout/default.html</code>のヘッダ(<code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>と<code class="language-plaintext highlighter-rouge">&lt;/head&gt;</code>の間)に以下を追記します．</li>
 </ol>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"https://fonts.googleapis.com/earlyaccess/notosansjapanese.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <ol>
-  <li><code class="highlighter-rouge">style.scss</code>の好きな要素の設定で<code class="highlighter-rouge">font-family: "Noto Sans Japanese"</code>を指定する．例えばp要素(本文)のフォントを変更したかったら，</li>
+  <li><code class="language-plaintext highlighter-rouge">style.scss</code>の好きな要素の設定で<code class="language-plaintext highlighter-rouge">font-family: "Noto Sans Japanese"</code>を指定する．例えばp要素(本文)のフォントを変更したかったら，</li>
 </ol>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">p</span> <span class="p">{</span>
@@ -115,7 +115,7 @@
   <span class="nl">font-weight</span><span class="p">:</span> <span class="m">900</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
-<p>のように書きます．<code class="highlighter-rouge">font-weight</code>というのは文字の太さでNoto Sans Japaneseでは以下の7種類に対応しています．太さは好みで適宜調整して下さい．</p>
+<p>のように書きます．<code class="language-plaintext highlighter-rouge">font-weight</code>というのは文字の太さでNoto Sans Japaneseでは以下の7種類に対応しています．太さは好みで適宜調整して下さい．</p>
 
 <h3 class="font-100">綺麗なWebフォントを使えます(font-weight:100)</h3>
 <h3 class="font-200">綺麗なWebフォントを使えます(font-weight:200)</h3>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-05T17:53:47+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">maea2 blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">ニューラルネットのover-parameterizationについて最近の論文を読んだ。</title><link href="http://localhost:4000/2020/05/04/over-parameterization.html" rel="alternate" type="text/html" title="ニューラルネットのover-parameterizationについて最近の論文を読んだ。" /><published>2020-05-04T00:00:00+09:00</published><updated>2020-05-04T00:00:00+09:00</updated><id>http://localhost:4000/2020/05/04/over-parameterization</id><content type="html" xml:base="http://localhost:4000/2020/05/04/over-parameterization.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-06T22:26:53+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">maea2 blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">ニューラルネットのover-parameterizationについて最近の論文を読んだ。</title><link href="http://localhost:4000/2020/05/04/over-parameterization.html" rel="alternate" type="text/html" title="ニューラルネットのover-parameterizationについて最近の論文を読んだ。" /><published>2020-05-04T00:00:00+09:00</published><updated>2020-05-04T00:00:00+09:00</updated><id>http://localhost:4000/2020/05/04/over-parameterization</id><content type="html" xml:base="http://localhost:4000/2020/05/04/over-parameterization.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#モチベーション&quot; id=&quot;markdown-toc-モチベーション&quot;&gt;モチベーション&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#2層の場合の結果&quot; id=&quot;markdown-toc-2層の場合の結果&quot;&gt;2層の場合の結果&lt;/a&gt;    &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;#1の論文の設定&quot; id=&quot;markdown-toc-1の論文の設定&quot;&gt;[1]の論文の設定&lt;/a&gt;&lt;/li&gt;
@@ -86,6 +86,12 @@ $$
 &lt;/div&gt;
 
 &lt;h2 id=&quot;2の論文の設定&quot;&gt;[2]の論文の設定&lt;/h2&gt;
+
+&lt;p&gt;実は[2]の論文で$L(\boldsymbol{W},\boldsymbol{a})$の挙動の式が得られている。[2]では高い確率で&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;L(\boldsymbol{W},\boldsymbol{a})\approx\frac{1}{2}\|(\boldsymbol{I}-\eta\boldsymbol{H}^\infty)^k\boldsymbol{y}\|_2^2&lt;/script&gt;
+
+&lt;p&gt;が成り立つことが示されている。&lt;/p&gt;
 
 &lt;h2 id=&quot;2の論文のキモ&quot;&gt;[2]の論文のキモ&lt;/h2&gt;
 
@@ -223,7 +229,7 @@ LightGBMでは $V_{j}(d)$ の代わりに勾配の大きなところと勾配の
 
 &lt;p&gt;同時に非ゼロにならないという性質を持っている特徴量成分たちを Bundle としてまとめてあげることで、特徴量の次元削減をするというのがEFBの主要なアイデアです。&lt;/p&gt;
 
-&lt;p&gt;実際には成分同士が完全に排他的であることはないので、$K$ 回までは同時に非ゼロになることを許すという感じで適当な閾値をつくって Bundleを作っていきます。これをやっているのが、原論文 [1] のAlgorithm 3です。ただ Algorithm 3通りにやると計算量が $O(# feature^2)$ となってしまうので、Bundleを作るのではなく、非ゼロ成分の数でソートするみたいです。非ゼロ成分の個数が大きくなるほど、同時に非ゼロを取る確率もあがるからというイメージですね。&lt;/p&gt;
+&lt;p&gt;実際には成分同士が完全に排他的であることはないので、$K$ 回までは同時に非ゼロになることを許すという感じで適当な閾値をつくって Bundleを作っていきます。これをやっているのが、原論文 [1] のAlgorithm 3です。ただ Algorithm 3通りにやると計算量が $O(\text{特徴量数}^2)$ となってしまうので、Bundleを作るのではなく、非ゼロ成分の数でソートするみたいです。非ゼロ成分の個数が大きくなるほど、同時に非ゼロを取る確率もあがるからというイメージですね。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/greedybundling.png&quot; alt=&quot;&quot; /&gt;
 &lt;strong&gt;Greedy Bundlingのアルゴリズム(原論文[1]より引用)&lt;/strong&gt;&lt;/p&gt;

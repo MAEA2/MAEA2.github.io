@@ -49,7 +49,7 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Squared Digit Sum | maea2 blog</title>
-<meta name="generator" content="Jekyll v3.8.6" />
+<meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="Squared Digit Sum" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="きっかけ" />
@@ -60,7 +60,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2018-03-28T00:00:00+09:00" />
 <script type="application/ld+json">
-{"datePublished":"2018-03-28T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/03/28/square-digit-sum.html"},"url":"http://localhost:4000/2018/03/28/square-digit-sum.html","description":"きっかけ","headline":"Squared Digit Sum","dateModified":"2018-03-28T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2018/03/28/square-digit-sum.html","headline":"Squared Digit Sum","dateModified":"2018-03-28T00:00:00+09:00","datePublished":"2018-03-28T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/03/28/square-digit-sum.html"},"description":"きっかけ","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -123,7 +123,7 @@
 
 <p>本当かどうかを確かめてみましょう。</p>
 
-<p>$n=1$から$n=100$について$n_{(10)},f_{10}(n_{(10)}),f_{10}(f_10(n_{(10)})),\ldots$を調べてみます調べてみます。以下はループするまでの数列を計算するプログラムです。$10$進数なので<code class="highlighter-rouge">base=10</code>とします。</p>
+<p>$n=1$から$n=100$について$n_{(10)},f_{10}(n_{(10)}),f_{10}(f_10(n_{(10)})),\ldots$を調べてみます調べてみます。以下はループするまでの数列を計算するプログラムです。$10$進数なので<code class="language-plaintext highlighter-rouge">base=10</code>とします。</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
 </span><span class="n">trans_decimal</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span><span class="n">base</span><span class="p">){</span><span class="w">
@@ -186,7 +186,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|6|5|0|2|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|6|5|0|2|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
 #### [1] "|9|0|4|9|(10)-&gt;|1|7|8|(10)-&gt;|1|1|4|(10)-&gt;|1|8|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
 #### [1] "|8|1|3|(10)-&gt;|7|4|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
 #### [1] "|9|9|0|4|(10)-&gt;|1|7|8|(10)-&gt;|1|1|4|(10)-&gt;|1|8|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
@@ -224,7 +224,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "base number is: 2"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "base number is: 2"
 #### [[1]]
 #### [1] "|1|(2)"
 ####
@@ -431,7 +431,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|1|(6)-&gt;|1|(6)"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|1|(6)-&gt;|1|(6)"
 #### [1] "|2|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
 #### [1] "|3|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
 #### [1] "|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"

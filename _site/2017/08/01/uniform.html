@@ -49,7 +49,7 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>一様分布の問題とその数値検証 | maea2 blog</title>
-<meta name="generator" content="Jekyll v3.8.6" />
+<meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="一様分布の問題とその数値検証" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="問題 $X,Y,Z$が互いに独立な$(0,1)$上の一様乱数とする．" />
@@ -60,7 +60,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-08-01T00:00:00+09:00" />
 <script type="application/ld+json">
-{"datePublished":"2017-08-01T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/01/uniform.html"},"url":"http://localhost:4000/2017/08/01/uniform.html","description":"問題 $X,Y,Z$が互いに独立な$(0,1)$上の一様乱数とする．","headline":"一様分布の問題とその数値検証","dateModified":"2017-08-01T00:00:00+09:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2017/08/01/uniform.html","headline":"一様分布の問題とその数値検証","dateModified":"2017-08-01T00:00:00+09:00","datePublished":"2017-08-01T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/08/01/uniform.html"},"description":"問題 $X,Y,Z$が互いに独立な$(0,1)$上の一様乱数とする．","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -134,18 +134,18 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">5</span>
-<span class="n">X</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">Y</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">Z</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">n_1</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">Y</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">n_2</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="o">-</span><span class="n">Z</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">n_3</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="o">-</span><span class="n">Z</span><span class="o">*</span><span class="n">Z</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"Pr[X^2&lt;Y]: %f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_1</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"Pr[XY&lt;Z]: %f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_2</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"Pr[XY&lt;Z*Z]: %f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_3</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">5</span><span class="o">/</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">X</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">Y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">Z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">n_1</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">Y</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">n_2</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="o">-</span><span class="n">Z</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">n_3</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="o">-</span><span class="n">Z</span><span class="o">*</span><span class="n">Z</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Pr[X^2&lt;Y]: </span><span class="si">%</span><span class="s">f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_1</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Pr[XY&lt;Z]: </span><span class="si">%</span><span class="s">f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_2</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Pr[XY&lt;Z*Z]: </span><span class="si">%</span><span class="s">f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_3</span><span class="o">/</span><span class="n">N</span><span class="o">-</span><span class="mi">5</span><span class="o">/</span><span class="mi">9</span><span class="p">))</span>
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pr[X^2&lt;Y]: -0.000257
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pr[X^2&lt;Y]: -0.000257
 Pr[XY&lt;Z]: -0.000520
 Pr[XY&lt;Z]: -0.000476
 </code></pre></div></div>
