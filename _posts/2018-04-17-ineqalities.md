@@ -4,6 +4,9 @@ title: 集中不等式まとめ
 tags: [math]
 ---
 
+* index
+{:toc}
+
 自分用に纏めます。証明がパラレルに進むのが楽しい。
 
 [この本](https://mitpress.mit.edu/books/foundations-machine-learning)に載ってる内容を写経して和訳してるだけ。
@@ -12,8 +15,8 @@ tags: [math]
 
 ## Hoeffdingの補題
 
-<div class="box">
-
+<div class="theorem">
+<div class='box-title'>Theorem</div>
 $X$を $\mathbb{E}[X]=0$ かつ$a\leq X\leq b$となる確率変数とする。
 
 このとき任意の正数$t$に対して
@@ -23,10 +26,8 @@ $$
 $$
 
 </div>
-
 <div class='proof'>
-
-[証明]
+<div class='box-title'>Proof</div>
 
 関数 $f(x)=e^{tx}$ の凸性から
 
@@ -107,8 +108,8 @@ $$
 
 ## Hoeffdingの不等式
 
-<div class="box">
-
+<div class="theorem">
+<div class='box-title'>Theorem</div>
 $X_1,X_2,\ldots,X_m$を独立な確率変数で、各$X_i$は$[a_i,b_i]$に値を取るとする。
 
 このとき任意の正数 $\varepsilon$ に対して
@@ -132,10 +133,9 @@ $$
 </div>
 
 <div class='proof'>
+<div class='box-title'>Proof</div>
 
-[証明]
-
-[チェビシェフの不等式](https://maea2.github.io/convergence/)において
+チェビシェフの不等式(https://maea2.github.io/convergence/)において
 
 $$
 \begin{align*}
@@ -173,10 +173,10 @@ $\mathrm{Pr}[S_m-\mathbb{E}[S_m]\leq -\varepsilon]$ についての不等式は�
 
 </div>
 
-## 定義: Martingale Difference　Sequence
+## Martingale Difference　Sequence
 
-<div class="box">
-
+<div class="definition">
+<div class='box-title'>definition</div>
 Martingale Difference Sequenceというものを次のように定義する。
 
 確率変数列$V_1,V_2,\ldots$が確率変数列$X_1,X_2,\ldots$に対してMartingale Difference Sequenceであるとは
@@ -191,8 +191,8 @@ $$
 
 ## 条件付き期待値に対するHoeffdingの補題
 
-<div class="box">
-
+<div class="theorem">
+<div class='box-title'>Theorem</div>
 確率変数 $V$ と $Z$ について $\mathbb{E}[V\vert Z]=0$かつある関数$f$と正の定数$c$について
 
 $$
@@ -221,8 +221,8 @@ $a$ を $f(Z)$ に $b$ を $f(Z)+c$ に置き換えて考える。
 
 ## Azumaの不等式
 
-<div class="box">
-
+<div class="theorem">
+<div class='box-title'>Theorem</div>
 $V_1,V_2,\ldots$が確率変数列$X_1,X_2,\ldots$に対してMartingale Difference Sequenceであるとする。
 
 $Z_i$を$X_1,\ldots,X_{i-1}$の関数とする。ある定数$c_i$が存在して
@@ -245,8 +245,7 @@ $$
 </div>
 
 <div class='proof'>
-[証明]
-
+<div class='box-title'>Proof</div>>
 $S_k=\sum_{i=1}^k V_i$ と置く。
 
 <div class="scroll">
@@ -266,8 +265,8 @@ $$
 
 ## McDiarmidの不等式
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 $X_1,\ldots,X_m\in \mathcal{X}^m$を独立な確率変数の集まりとする。$f:\mathcal{X}^m\to \mathbb{R}$ が次の条件を満たすと仮定する。
 
 $$
@@ -287,8 +286,8 @@ $$
 </div>
 
 <div class='proof'>
-[証明]
 
+<div class='box-title'>Proof</div>>
 $V=f(S)-E[f(S)]$ と置く。
 
 $$

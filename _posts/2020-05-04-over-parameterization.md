@@ -13,7 +13,7 @@ tags: [machine-learning]
 
 # 2層の場合の結果
 
-[^zu2019]では2層のニューラルネットで二乗損失を用いた場合に十分にユニット数で$m$が大きければ、勾配法による学習によって損失を限りなく小さくできることを示している。
+[1]では2層のニューラルネットで二乗損失を用いた場合に十分にユニット数で$m$が大きければ、勾配法による学習によって損失を限りなく小さくできることを示している。
 
 ## [1]の論文の設定
 
@@ -112,9 +112,12 @@ $$
 
 # 参考文献
 
-[^zu2019] : [GRADIENTDESCENTPROVABLYO PTIMIZES OVER-PARAMETERIZEDNEURALN ETWORKS](https://arxiv.org/abs/1810.02054)
+[1] [GRADIENTDESCENTPROVABLYO PTIMIZES OVER-PARAMETERIZEDNEURALN ETWORKS](https://arxiv.org/abs/1810.02054)
 
-- [2] [Fine-Grained Analysis of Optimization and Generalization for Overparameterized Two-Layer Neural Networks](https://arxiv.org/abs/1901.08584)
-- [3] [A Convergence Theory for Deep Learning via Over-Parameterization](http://arxiv.org/abs/1811.03962)
-- [4] [Gradient Descent Finds Global Minima of Deep Neural Networks](http://arxiv.org/abs/1811.03804)
-- [5] [Learning and Generalization in Overparameterized Neural Networks, Going Beyond Two Layers](https://arxiv.org/abs/1811.04918.)
+[2] [Fine-Grained Analysis of Optimization and Generalization for Overparameterized Two-Layer Neural Networks](https://arxiv.org/abs/1901.08584)
+
+[3] [A Convergence Theory for Deep Learning via Over-Parameterization](http://arxiv.org/abs/1811.03962)
+
+[4] [Gradient Descent Finds Global Minima of Deep Neural Networks](http://arxiv.org/abs/1811.03804)
+
+[5] [Learning and Generalization in Overparameterized Neural Networks, Going Beyond Two Layers](https://arxiv.org/abs/1811.04918.)

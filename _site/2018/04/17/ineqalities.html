@@ -52,15 +52,15 @@
 <meta name="generator" content="Jekyll v3.8.5" />
 <meta property="og:title" content="集中不等式まとめ" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="自分用に纏めます。証明がパラレルに進むのが楽しい。" />
-<meta property="og:description" content="自分用に纏めます。証明がパラレルに進むのが楽しい。" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
 <link rel="canonical" href="http://localhost:4000/2018/04/17/ineqalities.html" />
 <meta property="og:url" content="http://localhost:4000/2018/04/17/ineqalities.html" />
 <meta property="og:site_name" content="maea2 blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2018-04-17T00:00:00+09:00" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/2018/04/17/ineqalities.html","headline":"集中不等式まとめ","dateModified":"2018-04-17T00:00:00+09:00","datePublished":"2018-04-17T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/04/17/ineqalities.html"},"description":"自分用に纏めます。証明がパラレルに進むのが楽しい。","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/2018/04/17/ineqalities.html","headline":"集中不等式まとめ","dateModified":"2018-04-17T00:00:00+09:00","datePublished":"2018-04-17T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/04/17/ineqalities.html"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
 <body><header class="site-header" role="banner">
@@ -90,7 +90,18 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>自分用に纏めます。証明がパラレルに進むのが楽しい。</p>
+    <ul id="markdown-toc">
+  <li><a href="#hoeffdingの補題" id="markdown-toc-hoeffdingの補題">Hoeffdingの補題</a></li>
+  <li><a href="#hoeffdingの不等式" id="markdown-toc-hoeffdingの不等式">Hoeffdingの不等式</a></li>
+  <li><a href="#martingale-differencesequence" id="markdown-toc-martingale-differencesequence">Martingale Difference　Sequence</a></li>
+  <li><a href="#条件付き期待値に対するhoeffdingの補題" id="markdown-toc-条件付き期待値に対するhoeffdingの補題">条件付き期待値に対するHoeffdingの補題</a></li>
+  <li><a href="#azumaの不等式" id="markdown-toc-azumaの不等式">Azumaの不等式</a></li>
+  <li><a href="#mcdiarmidの不等式" id="markdown-toc-mcdiarmidの不等式">McDiarmidの不等式</a></li>
+  <li><a href="#備考" id="markdown-toc-備考">備考</a></li>
+  <li><a href="#参考文献というか全部写しただけだが" id="markdown-toc-参考文献というか全部写しただけだが">参考文献(というか全部写しただけだが)</a></li>
+</ul>
+
+<p>自分用に纏めます。証明がパラレルに進むのが楽しい。</p>
 
 <p><a href="https://mitpress.mit.edu/books/foundations-machine-learning">この本</a>に載ってる内容を写経して和訳してるだけ。</p>
 
@@ -98,8 +109,8 @@
 
 <h2 id="hoeffdingの補題">Hoeffdingの補題</h2>
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 $X$を $\mathbb{E}[X]=0$ かつ$a\leq X\leq b$となる確率変数とする。
 
 このとき任意の正数$t$に対して
@@ -109,10 +120,8 @@ $$
 $$
 
 </div>
-
 <div class="proof">
-
-[証明]
+<div class="box-title">Proof</div>
 
 関数 $f(x)=e^{tx}$ の凸性から
 
@@ -193,8 +202,8 @@ $$
 
 <h2 id="hoeffdingの不等式">Hoeffdingの不等式</h2>
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 $X_1,X_2,\ldots,X_m$を独立な確率変数で、各$X_i$は$[a_i,b_i]$に値を取るとする。
 
 このとき任意の正数 $\varepsilon$ に対して
@@ -218,10 +227,9 @@ $$
 </div>
 
 <div class="proof">
+<div class="box-title">Proof</div>
 
-[証明]
-
-[チェビシェフの不等式](https://maea2.github.io/convergence/)において
+チェビシェフの不等式(https://maea2.github.io/convergence/)において
 
 $$
 \begin{align*}
@@ -259,10 +267,10 @@ $\mathrm{Pr}[S_m-\mathbb{E}[S_m]\leq -\varepsilon]$ についての不等式は�
 
 </div>
 
-<h2 id="定義-martingale-differencesequence">定義: Martingale Difference　Sequence</h2>
+<h2 id="martingale-differencesequence">Martingale Difference　Sequence</h2>
 
-<div class="box">
-
+<div class="definition">
+<div class="box-title">definition</div>
 Martingale Difference Sequenceというものを次のように定義する。
 
 確率変数列$V_1,V_2,\ldots$が確率変数列$X_1,X_2,\ldots$に対してMartingale Difference Sequenceであるとは
@@ -277,8 +285,8 @@ $$
 
 <h2 id="条件付き期待値に対するhoeffdingの補題">条件付き期待値に対するHoeffdingの補題</h2>
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 確率変数 $V$ と $Z$ について $\mathbb{E}[V\vert Z]=0$かつある関数$f$と正の定数$c$について
 
 $$
@@ -307,8 +315,8 @@ $a$ を $f(Z)$ に $b$ を $f(Z)+c$ に置き換えて考える。
 
 <h2 id="azumaの不等式">Azumaの不等式</h2>
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 $V_1,V_2,\ldots$が確率変数列$X_1,X_2,\ldots$に対してMartingale Difference Sequenceであるとする。
 
 $Z_i$を$X_1,\ldots,X_{i-1}$の関数とする。ある定数$c_i$が存在して
@@ -331,8 +339,7 @@ $$
 </div>
 
 <div class="proof">
-[証明]
-
+<div class="box-title">Proof</div>&gt;
 $S_k=\sum_{i=1}^k V_i$ と置く。
 
 <div class="scroll">
@@ -352,8 +359,8 @@ $$
 
 <h2 id="mcdiarmidの不等式">McDiarmidの不等式</h2>
 
-<div class="box">
-
+<div class="theorem">
+<div class="box-title">Theorem</div>
 $X_1,\ldots,X_m\in \mathcal{X}^m$を独立な確率変数の集まりとする。$f:\mathcal{X}^m\to \mathbb{R}$ が次の条件を満たすと仮定する。
 
 $$
@@ -373,8 +380,8 @@ $$
 </div>
 
 <div class="proof">
-[証明]
 
+<div class="box-title">Proof</div>&gt;
 $V=f(S)-E[f(S)]$ と置く。
 
 $$

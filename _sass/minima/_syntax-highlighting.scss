@@ -91,15 +91,64 @@
 }
 
 
+
+.theorem {
+    position: relative;
+    margin: 2em 0;
+    padding: 0.5em 1em;
+    border: solid 3px #FFC894;
+    border-radius: 8px;
+}
+.theorem .box-title {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 15px;
+    background: #FFF;
+    color: #FFC894;
+    font-weight: bold;
+}
+
 .proof {
-  background-color: #b7d8f6;
-  padding: 7px 7px 7px 10px;
-  border: 1px solid #ddd;
-  font-size: 12pt;
-  line-height: 1.7;
-  // -moz-box-shadow: 3px 3px rgba(0,0,0,0.1);
-  // -webkit-box-shadow: 3px 3px rgba(0,0,0,0.1);
-  // box-shadow: 3px 3px rgba(0,0,0,0.1);
-  margin: 20px 0 20px 0;
-  overflow: scroll;
+    position: relative;
+    margin: 2em 0;
+    padding: 0.5em 1em;
+    border: solid 3px #95ccff;
+    border-radius: 8px;
+}
+.proof .box-title {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 15px;
+    background: #FFF;
+    color: #95ccff;
+    font-weight: bold;
+}
+
+
+.definition {
+    position: relative;
+    margin: 2em 0;
+    padding: 0.5em 1em;
+    border: solid 3px #78CC76;
+    border-radius: 8px;
+}
+.definition .box-title {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 15px;
+    background: #FFF;
+    color: #78CC76;
+    font-weight: bold;
 }

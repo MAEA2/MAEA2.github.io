@@ -5,12 +5,13 @@ tags: [math,statistics]
 ---
 
 
-<div class='box'>
+<div class='theorem'>
+<div class='box-title'>定理</div>
 確率変数 $X$ が区間 $[a,b]$ で値を取るとする。このとき $X$ は パラメータ $\sigma=\frac{b-a}{2}$ で sub-gaussianになる。
 </div>
-<div class='proof'>
-[証明]
 
+<div class='proof'>
+<div class='box-title'>証明</div>
 $\psi(\lambda):=\log\mathbb{E}[e^{\lambda X}]$ と置くと。テイラーの定理より
 
 $$
