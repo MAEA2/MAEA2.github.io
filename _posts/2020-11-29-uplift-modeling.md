@@ -72,7 +72,6 @@ $$
 
 ### AUUCの定義
 
-
 # 参考文献
 - [Uplift modeling for clinical trial data](http://people.cs.pitt.edu/~milos/icml_clinicaldata_2012/Papers/Oral_Jaroszewitz_ICML_Clinical_2012.pdf)
 
