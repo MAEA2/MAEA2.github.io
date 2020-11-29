@@ -53,12 +53,10 @@ Uplift ModelingとはUpliftをデータから予測しようとする手法の�
 Upliftは集団に対する介入の効果ではなく、個人への介入の効果を指している。A/Bテストで知りたいような集団への介入効果は**average treatment effect**と呼ばれ、
 Upliftのような個人への介入効果は**individual treatment effect**と呼ばれている。
 
-# Uplift Modelingで何をしたいか。
+## Uplift Modelingで何をしたいか。
 
 個人ごとのUpliftを知ることができれば、個人ごとに介入を行うかどうかを決定するのに役立つ。
 商品の広告を例にとると、Upliftが正であるユーザーに広告を表示するのが良いと考えられる。逆にUpliftが負のユーザーに対しては広告は購買確率を下げることになるので、広告を表示しないほうが良いと考えられる。
-
-# Uplift Modelingのやり方
 
 # 参考文献
 - [Uplift modeling for clinical trial data](http://people.cs.pitt.edu/~milos/icml_clinicaldata_2012/Papers/Oral_Jaroszewitz_ICML_Clinical_2012.pdf)
