@@ -1,4 +1,83 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-07T11:46:34+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">maea2 blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">単位根検定について</title><link href="http://localhost:4000/2020/05/10/unit-root-test.html" rel="alternate" type="text/html" title="単位根検定について" /><published>2020-05-10T00:00:00+09:00</published><updated>2020-05-10T00:00:00+09:00</updated><id>http://localhost:4000/2020/05/10/unit-root-test</id><content type="html" xml:base="http://localhost:4000/2020/05/10/unit-root-test.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-04T04:03:31+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">maea2 blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Generalized random forest を理解する</title><link href="http://localhost:4000/2020/07/19/generalized-random-forest.html" rel="alternate" type="text/html" title="Generalized random forest を理解する" /><published>2020-07-19T00:00:00+09:00</published><updated>2020-07-19T00:00:00+09:00</updated><id>http://localhost:4000/2020/07/19/generalized-random-forest</id><content type="html" xml:base="http://localhost:4000/2020/07/19/generalized-random-forest.html">&lt;h1 id=&quot;generalized-random-forest-とは&quot;&gt;Generalized random forest とは&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;セミパラメトリック推定にrandom forestを因果推論に利用した手法&lt;/li&gt;
+  &lt;li&gt;heterogeneous treat ment effectを推定することができる。&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="github" /><summary type="html">Generalized random forest とは</summary></entry><entry><title type="html">Implicit Neural Representations with Periodic Activation Functions を読んだ</title><link href="http://localhost:4000/2020/06/20/SIREN.html" rel="alternate" type="text/html" title="Implicit Neural Representations with Periodic Activation Functions を読んだ" /><published>2020-06-20T00:00:00+09:00</published><updated>2020-06-20T00:00:00+09:00</updated><id>http://localhost:4000/2020/06/20/SIREN</id><content type="html" xml:base="http://localhost:4000/2020/06/20/SIREN.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#どんな論文&quot; id=&quot;markdown-toc-どんな論文&quot;&gt;どんな論文？&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#参考動画&quot; id=&quot;markdown-toc-参考動画&quot;&gt;参考動画&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#implicit-problemとは&quot; id=&quot;markdown-toc-implicit-problemとは&quot;&gt;implicit problemとは？&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#sirenの性質&quot; id=&quot;markdown-toc-sirenの性質&quot;&gt;SIRENの性質&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;どんな論文&quot;&gt;どんな論文？&lt;/h1&gt;
+
+&lt;p&gt;高次の微分を含む陰関数方程式(implicit problem)を解く問題に対して活性化関数を$\sin$ 関数にしたNN(SIREN; sinusoidal representation network)を用いる手法を提案した。画像・動画・3D形状・音声など様々な領域の信号復元の問題がこの形式で定式化できて、各ドメインで信号復元の問題を解かせたところ、
+既存のReLUなどを用いたNNに比べSNPR(Peak signale-to-noise ratio)が大幅に改善した。また、SIRENの適切な初期化条件についても理論・実験の両面から検証されている。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://arxiv.org/abs/2006.09661&quot;&gt;論文リンク&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考動画&quot;&gt;参考動画&lt;/h2&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/Q2fLWGBeaiI&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;h1 id=&quot;implicit-problemとは&quot;&gt;implicit problemとは？&lt;/h1&gt;
+
+&lt;div class=&quot;definition&quot;&gt;
+&lt;div class=&quot;box-title&quot;&gt;implicit problem&lt;/div&gt;
+implicit problem とは 関数 $\Phi: \mathbb{R}^k \to\Omega$ で 
+$$
+F(\boldsymbol{x}, \Phi, \nabla_{\boldsymbol{x}}, \nabla_{\boldsymbol{x}}^2\Phi, ...) = 0
+$$
+を満たすような関数を探す問題のこと。$\Omega\subset \mathbb{R}^l$ は適当な閉領域 ($\Omega = \bigcup_{m=1}^{M} \Omega_m$ みたいな感じで分割されていても良い)
+&lt;/div&gt;
+
+&lt;h1 id=&quot;sirenの性質&quot;&gt;SIRENの性質&lt;/h1&gt;
+
+&lt;div class=&quot;definition&quot;&gt;
+&lt;div class=&quot;box-title&quot;&gt;SIREN&lt;/div&gt;
+
+$$
+\begin{align}
+\mathrm{SIREN}_n(\boldsymbol{x}) &amp;amp; = \boldsymbol{W}_n(\phi_{n-1}\circ\phi_{n-2}\circ\cdots\circ\phi_0)(\boldsymbol{x})+\boldsymbol{b}_n \\
+\phi_i &amp;amp; = \sin(\boldsymbol{W}_i\boldsymbol{x}+\boldsymbol{b}_i)  
+\end{align}
+$$
+
+つまり、アフィン変換と周期関数(\sin)を交互に繰り返す構造。
+&lt;/div&gt;
+
+&lt;div class=&quot;theorem&quot;&gt;
+&lt;div class=&quot;box-title&quot;&gt;SIRENの導関数はSIRENの積&lt;/div&gt;
+$\sin^\prime(\theta)=\cos(\theta)=\sin(\theta+\pi/2)$が成り立つので、導関数を計算すると各要素はSIRENの積になる。
+&lt;/div&gt;
+
+&lt;p&gt;例えば、1次元かつ$n=2$のSIRENの導関数を考えると&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathrm{SIREN}_2(x) &amp; = w_2\sin(w_1\sin(w_0x+b_0)+b_1)+b_2\\
+\frac{d}{dx}\mathrm{SIREN}_2(x) &amp; =  w_2\sin^\prime(w_1\sin(w_0x+b_0)+b_1)\sin^\prime(w_0x+b_0))w_0 \\
+&amp; = w_2\sin(w_1\sin(w_0x+b_0)+b_1+\pi/2)\sin(w_0x+b_0+\pi/2)w_0 
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;となって、SIRENの積で評価できる。&lt;/p&gt;
+
+&lt;p&gt;論文では$n=5$としているらしい。&lt;/p&gt;
+
+&lt;p&gt;論文では各層で出力の分布が保たれるような初期化の方法についても議論していて、次の定理が成り立つ。&lt;/p&gt;
+
+&lt;div class=&quot;theorem&quot;&gt;
+&lt;div class=&quot;box-title&quot;&gt;SIRENの初期化条件について&lt;/div&gt;
+各重み成分を$\boldsymbol{W}_{ij}$とするとき$\boldsymbol{W}_{ij}\overset{i.i.d.}{\sim} \mathcal{U}(-\sqrt{6/\text{前層の入力数}},\sqrt{6/\text{前層の入力数}})$とすると、各層(2層目以降)の中間層の出力が標準正規分布に従う。
+&lt;/div&gt;
+
+&lt;p&gt;この初期化の方法により、出力の分布が層数によらないようにしている。実験も行われており、たしかに分布が変化していないことがわかる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/siren_initialization.png&quot; alt=&quot;sirenの初期化&quot; /&gt;
+&lt;strong&gt;6層のSIRENを上記の条件で初期化した場合の各層の分布とスペクトル。理論値と合致しており、スペクトルについても緩やかに変化していることが見て取れる。&lt;/strong&gt;&lt;/p&gt;</content><author><name></name></author><category term="math" /><category term="statistics" /><category term="machine-learning" /><summary type="html"></summary></entry><entry><title type="html">単位根検定について</title><link href="http://localhost:4000/2020/05/10/unit-root-test.html" rel="alternate" type="text/html" title="単位根検定について" /><published>2020-05-10T00:00:00+09:00</published><updated>2020-05-10T00:00:00+09:00</updated><id>http://localhost:4000/2020/05/10/unit-root-test</id><content type="html" xml:base="http://localhost:4000/2020/05/10/unit-root-test.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#単位根検定とは&quot; id=&quot;markdown-toc-単位根検定とは&quot;&gt;単位根検定とは&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#単位根検定&quot; id=&quot;markdown-toc-単位根検定&quot;&gt;単位根検定&lt;/a&gt;    &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;#df検定dickey-fuller-test&quot; id=&quot;markdown-toc-df検定dickey-fuller-test&quot;&gt;DF検定(Dickey-Fuller Test)&lt;/a&gt;        &lt;ul&gt;
@@ -316,7 +395,7 @@ LightGBMでは $V_{j}(d)$ の代わりに勾配の大きなところと勾配の
   &lt;li&gt;&lt;a href=&quot;#ブースティング木&quot; id=&quot;markdown-toc-ブースティング木&quot;&gt;ブースティング木&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#最急降下法&quot; id=&quot;markdown-toc-最急降下法&quot;&gt;最急降下法&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#勾配ブースティングとは&quot; id=&quot;markdown-toc-勾配ブースティングとは&quot;&gt;勾配ブースティングとは&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#勾配ブースティング決定木&quot; id=&quot;markdown-toc-勾配ブースティング決定木&quot;&gt;勾配ブースティング決定木&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#勾配ブースティング決定木&quot; id=&quot;markdown-toc-勾配ブースティング決定木&quot;&gt;勾配ブースティング決定木&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#参考文献&quot; id=&quot;markdown-toc-参考文献&quot;&gt;参考文献&lt;/a&gt;&lt;/li&gt;
@@ -324,19 +403,19 @@ LightGBMでは $V_{j}(d)$ の代わりに勾配の大きなところと勾配の
 
 &lt;h1 id=&quot;動機&quot;&gt;動機&lt;/h1&gt;
 
-&lt;p&gt;Kaggleなどで話題となっているLightGBMなどのことを知るためにまず、勾配ブースティング決定木の勉強をした。&lt;/p&gt;
+&lt;p&gt;Kaggleなどで話題となっているLightGBMなどのことを知るためにまず、勾配ブースティング決定木の勉強をした。&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\DeclareMathOperator{\argmin}{arg\,min}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\DeclareMathOperator{\mathrm{argmin}}{arg\,min}&lt;/script&gt;
 
 &lt;h1 id=&quot;決定木とは&quot;&gt;決定木とは&lt;/h1&gt;
 
-&lt;p&gt;決定木では特徴量 $x$ を元に排反な $J$ 個の分割領域 $\{R_j\}_{j=1}^J$ を構成し、&lt;/p&gt;
+&lt;p&gt;決定木では特徴量 $x$ を元に排反な $J$ 個の分割領域 $\{R_j\}_{j=1}^J$ を構成し、&lt;/p&gt;
 
 &lt;p&gt;$x \in R_j$ のとき、予測値 $f(x)=\gamma_j$ を返す。&lt;/p&gt;
 
 &lt;p&gt;これをまとめて表現すると、$\Theta := \{R_j, \gamma_j \}_{j=1}^J$ として、&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x) = T(x; ) := \sum_{j=1}^J \gamma_j I(x\in R_j)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x) = T(x; \Theta) := \sum_{j=1}^J \gamma_j I(x\in R_j)&lt;/script&gt;
 
 &lt;p&gt;とかける。&lt;/p&gt;
 
@@ -344,68 +423,106 @@ LightGBMでは $V_{j}(d)$ の代わりに勾配の大きなところと勾配の
 
 &lt;p&gt;ブースティング木とは決定木をたくさん用意した予測モデルです。つまり&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f_M(x) = \sum_{m=1}^M T(x;\Theta_m)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;F_M(x;\{\Theta_k\}_{k=1}^M) = \sum_{k=1}^M T(x;\Theta_k)&lt;/script&gt;
 
-&lt;p&gt;で予測するようなモデルです。&lt;a href=&quot;https://maea2.github.io/adaboost&quot;&gt;Adaboostの記事&lt;/a&gt; でやったように $f_M$ を逐次最適化してみましょう。&lt;/p&gt;
+&lt;p&gt;で予測するようなモデルです。&lt;a href=&quot;https://maea2.github.io/adaboost&quot;&gt;Adaboostの記事&lt;/a&gt; でやったように$F$ を逐次最適化してみましょう。&lt;/p&gt;
 
-&lt;p&gt;つまり、各 $\hat{\Theta}_m$ を推定するときに&lt;/p&gt;
+&lt;p&gt;つまり、各 $\Theta_m$ を推定するときに&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat{\Theta}_m = \underset{\Theta_m}{\argmin} \sum_{i=1}^N L(y_i, f_{m-1}(x )+ T(x;\Theta_m))&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat{\Theta}_1,\hat{\Theta}_2,\dots,\hat{\Theta}_{m-1}&lt;/script&gt;
 
-&lt;p&gt;で推定してやろうということです。&lt;/p&gt;
+&lt;p&gt;は得られているものとして(固定して)、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat{\Theta}_m = \underset{\Theta_m}{\mathrm{argmin}} \sum_{i=1}^N L(y_i, F_M(x;\{\hat{\Theta}\}_{k=1}^{m-1})(x_i)+ T(x_i;\Theta_m))&lt;/script&gt;
+
+&lt;p&gt;で推定してやろうということです。$L$は適当な損失関数です。&lt;/p&gt;
 
 &lt;h1 id=&quot;最急降下法&quot;&gt;最急降下法&lt;/h1&gt;
 
-&lt;p&gt;いま、関数　$f$ を使って予測したときの 損失関数の　$x$　についての条件付き期待値&lt;/p&gt;
+&lt;p&gt;いま、関数$f$を使って予測したときの 損失関数の$x$についての条件付き期待値&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Phi(x, f) = \mathbb{E}_{x,y} \left[L(y, f(x))| x\right]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Phi(f) = \mathbb{E}_{y,x} \left[L(y, f(x))\right]&lt;/script&gt;
 
 &lt;p&gt;がわかっているとします。&lt;/p&gt;
 
-&lt;p&gt;\Phi(f) を最小にするような予測関数 $f^\ast(x):=\argmin_f \Phi(f)$ がいま得たいものです。&lt;/p&gt;
+&lt;p&gt;$\Phi(f)$ を最小にするような予測関数 $f^\ast(x):=\mathrm{argmin}_f \Phi(f)$ がいま得たいものです。&lt;/p&gt;
 
 &lt;p&gt;これを、&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f_M(x)=\sum_{m=1}^M f_m(x)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;F_M(x;\{f_k\}_{k=1}^M)=\sum_{k=1}^M f_m(x)&lt;/script&gt;
 
 &lt;p&gt;の形で得ることを考えます。$f_1, f_2, f_3$ と少しづつ $f_i$ を増やして近似していくというイメージです。&lt;/p&gt;
 
 &lt;p&gt;$f_i$ 一つ一つが弱学習器だと思ってください。&lt;/p&gt;
 
-&lt;p&gt;いま、$f_1,\ldots,f_{m-1}$ まで得られているとします。&lt;/p&gt;
+&lt;p&gt;いま、$f_1,\ldots,f_{m-1}$ まで得られているとします。&lt;/p&gt;
 
-&lt;p&gt;いま、最急降下法を使って $f_m$ を計算することを考えます。&lt;/p&gt;
+&lt;p&gt;いま、最急降下法を使って $f_m$ を計算することを考えます。$\Phi(f)$の$f$についての関数微分(functional gradient)を&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;g_m(x) = \left.\frac{\partial \Phi(x^\prime, f_{m-1})}{\partial f(x^\prime)}\right|_{x^\prime=x}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;g_m := \left.\frac{\partial \Phi}{\partial f}\right|_{f=F_{m-1}}&lt;/script&gt;
 
 &lt;p&gt;と置くと、最急降下法によってもとまる $f_m$ は&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f_m(x) = f_{m-1}(x) - \rho_m g_m(x)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f_m(x) = f_{m-1}(x) - \rho_m g_m(x)&lt;/script&gt;
 
-&lt;p&gt;となります。$\rho_m$ は $\Phi(x, f_m)$ が最小となるようにとります。&lt;/p&gt;
+&lt;p&gt;となります。$\rho_m$ は $\Phi(F_{m})$ が最小となるようにとります。&lt;/p&gt;
+
+&lt;p&gt;つまり、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\rho_m :=\mathrm{argmin}_{\rho}\Phi(F_{m-1}-\rho g_m)&lt;/script&gt;
+
+&lt;p&gt;で定めます。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Phi(f) = \mathbb{E}_x[\mathbb{E}_y[L(y,f(x))|x]]&lt;/script&gt;
+
+&lt;p&gt;と書き直すことができて、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\phi(f(x))=\mathbb{E}_y[L(y,f(x))|x]&lt;/script&gt;
+
+&lt;p&gt;と置くと、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Phi(f) = \mathbb{E}_x[\phi(x)]&lt;/script&gt;
+
+&lt;p&gt;と書き直す事ができます。$\phi$を使うと、$g_m(x)$を&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;g_m(x) = \left.\frac{\partial \phi(f(x))}{\partial f(x)}\right|_{f(x)=F(x;\{f_k\}_{k=1}^{m-1})}&lt;/script&gt;
+
+&lt;p&gt;と書き直せます。これをもう少し書き換えると&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+g_m(x) &amp;= \left.\frac{\partial \phi(f(x))}{\partial f(x)}\right|_{f(x)=F(x;\{f_k\}_{k=1}^{m-1})} \\
+&amp;= \mathbb{E}_y\left[\left.\frac{\partial L(y,f(x)|x)}{\partial f(x)}\right|_{f(x)=F(x;\{f_k\}_{k=1}^{m-1})}\right] (\text{微分と積分を入れ替えた})
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;となります。これを用いて、先程の$\rho_m$の最適化の式を書き直すと&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\rho_m = \mathrm{argmin}_{\rho}\mathbb{E}_{y,x}L(y, F_{m-1}-\rho g_m(x))&lt;/script&gt;
+
+&lt;p&gt;とかける。&lt;/p&gt;
 
 &lt;h1 id=&quot;勾配ブースティングとは&quot;&gt;勾配ブースティングとは&lt;/h1&gt;
 
-&lt;p&gt;実際は $(x,y)$ の分布は未知であり、有限のサンプルデータ $\{(x_i,y_i)\}$ しか持っていません。&lt;/p&gt;
+&lt;p&gt;実際は $(x,y)$ の分布は未知であり、有限の訓練データ $\{(x_i,y_i)\}_{i=1}^N$ しか持っていません。&lt;/p&gt;
 
-&lt;p&gt;なので、$g_m(x)$ の値は訓練データ点のところしかわかりません。よって、$\hat{\Theta}_m$ を推定するような問題を考えるとき、この方法は直接は使えません。&lt;/p&gt;
+&lt;p&gt;なので、$g_m(x)$ の値は訓練データ点のところしかわかりません。よって、$\hat{\Theta}_m$ を推定するような問題を考えるとき、この方法は直接は使えません。&lt;/p&gt;
 
 &lt;p&gt;次善の策を考えます。&lt;/p&gt;
 
-&lt;p&gt;つまり有限個の勾配の値 $\{g_m(x_i)\}_{i=1}^N$ と $\{T(x_i;\Theta)\}$ が訓練データ点においてだけでも近くなるように&lt;/p&gt;
+&lt;p&gt;つまり有限個の最急勾配の値 $\{-g_m(x_i)\}_{i=1}^N$ と $\{T(x_i;\Theta)\}$ が訓練データ点においてだけでも近くなるように&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\tilde{\Theta}_m :=\underset{\Theta}{\argmin}\sum_{i=1}^N (-g_m(x_i)-T(x_i;\Theta))^2&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\tilde{\Theta}_m :=\underset{\Theta}{\mathrm{argmin}}\sum_{i=1}^N (-g_m(x_i)-T(x_i;\Theta))^2&lt;/script&gt;
 
 &lt;p&gt;で定めるという策です。&lt;/p&gt;
 
-&lt;h2 id=&quot;勾配ブースティング決定木&quot;&gt;勾配ブースティング決定木&lt;/h2&gt;
+&lt;h2 id=&quot;勾配ブースティング決定木&quot;&gt;勾配ブースティング決定木&lt;/h2&gt;
 
 &lt;p&gt;以上を踏まえて勾配ブースティング決定木の最適化アルゴリズムは次のようになります。&lt;/p&gt;
 
 &lt;p&gt;(b)の部分が勾配情報との近くなるようにしている部分です。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/gbdt.png&quot; alt=&quot;&quot; /&gt;
-&lt;strong&gt;勾配ブースティング決定木のアルゴリズム (カステラ本のp361より引用)&lt;/strong&gt;&lt;/p&gt;
+&lt;strong&gt;勾配ブースティング決定木のアルゴリズム (カステラ本のp361より引用)&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
 
@@ -417,9 +534,7 @@ LightGBMでは $V_{j}(d)$ の代わりに勾配の大きなところと勾配の
     &lt;p&gt;&lt;a href=&quot;http://web.stanford.edu/~hastie/ElemStatLearn/&quot;&gt;The Elements of
 Statistical Learning&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</content><author><name></name></author><category term="machine-learning" /><category term="math" /><summary type="html"></summary></entry><entry><title type="html">Adaboostは指数損失を最小化している。</title><link href="http://localhost:4000/2019/03/30/adaboost.html" rel="alternate" type="text/html" title="Adaboostは指数損失を最小化している。" /><published>2019-03-30T00:00:00+09:00</published><updated>2019-03-30T00:00:00+09:00</updated><id>http://localhost:4000/2019/03/30/adaboost</id><content type="html" xml:base="http://localhost:4000/2019/03/30/adaboost.html">&lt;h1 id=&quot;adaboostとは&quot;&gt;Adaboostとは&lt;/h1&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="machine-learning" /><category term="math" /><summary type="html"></summary></entry><entry><title type="html">Adaboostは指数損失を最小化している。</title><link href="http://localhost:4000/2019/03/30/adaboost.html" rel="alternate" type="text/html" title="Adaboostは指数損失を最小化している。" /><published>2019-03-30T00:00:00+09:00</published><updated>2019-03-30T00:00:00+09:00</updated><id>http://localhost:4000/2019/03/30/adaboost</id><content type="html" xml:base="http://localhost:4000/2019/03/30/adaboost.html">&lt;h1 id=&quot;adaboostとは&quot;&gt;Adaboostとは&lt;/h1&gt;
 
 &lt;p&gt;Adaboostは単純な分類器(弱学習器)をたくさん集めて、分類モデルを学習するときのアルゴリズムの一つです。&lt;/p&gt;
 
@@ -518,149 +633,4 @@ $$
 Statistical Learning 10章&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;/p&gt;</content><author><name></name></author><category term="machine-learning" /><category term="math" /><summary type="html">Adaboostとは</summary></entry><entry><title type="html">主成分分析の気持ち</title><link href="http://localhost:4000/2019/02/02/pca-objective.html" rel="alternate" type="text/html" title="主成分分析の気持ち" /><published>2019-02-02T00:00:00+09:00</published><updated>2019-02-02T00:00:00+09:00</updated><id>http://localhost:4000/2019/02/02/pca-objective</id><content type="html" xml:base="http://localhost:4000/2019/02/02/pca-objective.html">&lt;p&gt;主成分分析が何を解きたいかということを考えると自分のなかで一番しっくりくる説明を書いてみました。&lt;/p&gt;
-
-&lt;div class=&quot;box&quot;&gt;
-
-平均が$\boldsymbol{0}$となる$p$次元のデータ$\{\boldsymbol{x}_{i}\}_{i=1}^N \subset \mathbb{R}^p$が与えられたときに、元のデータをなるべく損なわないような正規直交系(長さが1で互いに直交するようなベクトルの組)$\{\boldsymbol{u}_i\}_{i=1}^d\subset \mathbb{R}^p$ を見つけてくる。
-&lt;/div&gt;
-
-&lt;p&gt;$p$次元ベクトルは1次独立なベクトルが$p$個あれば、それらの線型結合によって表現することができるので、ここでは $d &amp;lt; p$ となる状況を考えています。つまり$p$次元のデータを$d$ 個の直交系を使うことにより「圧縮」して表現してやろうというわけです。&lt;/p&gt;
-
-&lt;p&gt;ここで、「元のデータをなるべく損なわない」の定義は何なのかという疑問が生じますが、ここでは次のような定義を採用します。&lt;/p&gt;
-
-&lt;div class=&quot;box&quot;&gt;
-
-$\{\boldsymbol{u}_{i}\}_{i=1}^d$で張られる空間にデータ $\{\boldsymbol{x}_{i}\}_{i=1}^N$ を直交射影したときの2乗距離の平均が最小になるようにとる。
-
-&lt;/div&gt;
-
-&lt;p&gt;「損なわれなさ」に2乗距離を採用することに数学的な必然性はありません。ただ、最小2乗法などを考えるとわかるようにこうすると後の計算が楽になります。&lt;/p&gt;
-
-&lt;p&gt;いま、ベクトル$\boldsymbol{x}\in\mathbb{R}^p$を&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\{\boldsymbol{u}_i\}_{i=1}^d&lt;/script&gt;
-
-&lt;p&gt;で張られる空間に直交射影したベクトルを考えます。&lt;/p&gt;
-
-&lt;p&gt;これは $\boldsymbol{U}\boldsymbol{U}^\top\boldsymbol{x}$ と表されます。&lt;/p&gt;
-
-&lt;p&gt;なぜなら、直交系で張られる空間に対する射影であることから射影ベクトルは&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sum_{i=1}^d (\boldsymbol{u}_{i}^\top \boldsymbol{x}_{i}) \boldsymbol{u}_{i}&lt;/script&gt;
-
-&lt;p&gt;とかけるからです。&lt;/p&gt;
-
-&lt;p&gt;ここで&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\boldsymbol{U} = [\boldsymbol{u}_1, \ldots, \boldsymbol{u}_{d}]\in \mathbb{R}^{p\times d}&lt;/script&gt;
-
-&lt;p&gt;と置いています。&lt;/p&gt;
-
-&lt;p&gt;これより、主成分分析は次のような問題を解くことになります。&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-&amp;\text{minimize}\,\,\frac{1}{N}\sum_{i=1}^N \|\boldsymbol{x}_i - \boldsymbol{U}\boldsymbol{U}^\top\boldsymbol{x}_i\|^2\\
-
-&amp; \text{s.t.}\quad \boldsymbol{U}^\top \boldsymbol{U} = \boldsymbol{I}_d
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;よく主成分分析を説明するときに、データの散らばりが最大になるように分散共分散行列の固有値の大きなものから固有ベクトルを取っていけばよいというような説明がなされますが、これは主成分分析の気持ちとはややずれていると思います。2乗距離が最小になるような直交系をみつけてくるというような説明のほうがしっくりきます。&lt;/p&gt;</content><author><name></name></author><category term="math" /><category term="statistics" /><summary type="html">主成分分析が何を解きたいかということを考えると自分のなかで一番しっくりくる説明を書いてみました。</summary></entry><entry><title type="html">論文の読み方について</title><link href="http://localhost:4000/2018/09/10/how-to-read-a-paper.html" rel="alternate" type="text/html" title="論文の読み方について" /><published>2018-09-10T00:00:00+09:00</published><updated>2018-09-10T00:00:00+09:00</updated><id>http://localhost:4000/2018/09/10/how-to-read-a-paper</id><content type="html" xml:base="http://localhost:4000/2018/09/10/how-to-read-a-paper.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#経緯&quot; id=&quot;markdown-toc-経緯&quot;&gt;経緯&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#やり方&quot; id=&quot;markdown-toc-やり方&quot;&gt;やり方&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#the-first-path&quot; id=&quot;markdown-toc-the-first-path&quot;&gt;The first path&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#the-second-path&quot; id=&quot;markdown-toc-the-second-path&quot;&gt;The second path&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#the-third-path&quot; id=&quot;markdown-toc-the-third-path&quot;&gt;The third path&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;経緯&quot;&gt;経緯&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.albany.edu/spatial/WebsiteFiles/ResearchAdvices/how-to-read-a-paper.pdf&quot;&gt;How to read a paper&lt;/a&gt;という
-論文の読み方についてのガイドが非常に参考になったので、自分なりにまとめてみたいと思います。&lt;/p&gt;
-
-&lt;h1 id=&quot;やり方&quot;&gt;やり方&lt;/h1&gt;
-
-&lt;p&gt;このガイドではThree-pass approachというものを提案しています。論文を視野を変えて3ステップに分けて読むということです。次の3ステップからなります。よくある感じのやり方ですが、各やり方についての説明が具体的なので、すぐに実践できます。&lt;/p&gt;
-
-&lt;h2 id=&quot;the-first-path&quot;&gt;The first path&lt;/h2&gt;
-
-&lt;p&gt;first path では論文を「ざっと」読んで概要を把握するということをします。具体的には次のような手順で行います。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;論文のタイトル、アブストラクト、イントロダクションを注意深く読む。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;章や説のトピックセンテンス(だいたい1行目が多い)を読む。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;数式などをちらっと見て、アルゴリズムなどがどの分野に関わっていそうな論文かを判断する。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;結論を読む。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;参考文献一覧を読む。以前読んだ文献があるかどうかをチェックする。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;これらの手順を行えば、論文に関して疑問に答えられるようになっているはずです。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;この論文はどの分野の論文か。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;他の論文がこの論文とどのような関係があるか。どのような理論が用いられているか。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;この論文の貢献は何か。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;論文は明快に書かれているか。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;明快に書かれているかというのは、これが満たされていないと論文がリジェクトされてしまうので、ちゃんとした論文であればアブストラクトやイントロダクションがその論文のわかりやすい要約になっているはずだということです。&lt;/p&gt;
-
-&lt;p&gt;first path は自分の研究内容とは関係のない論文(だが将来的には関係するかもしれないような論文)を判断するプロセスと言えます。&lt;/p&gt;
-
-&lt;h2 id=&quot;the-second-path&quot;&gt;The second path&lt;/h2&gt;
-
-&lt;p&gt;second path は論文の詳細を把握するプロセスです。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;論文をfirst path のときよりも注意深く読む。但し、定理の証明などの細部は飛ばして読む。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;読んでいる途中で理解できなかったこと・疑問に思ったことをメモしておく。論文該当箇所などに直接書き込んでもいいかも。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;論文の図表を注意深く見ておく。特にグラフはしっかり見る。軸はちゃんと付いているか、実験結果にエラーバーは付いているかなどを確認する。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;論文に関係しそうなまだ読んでいない参考文献をチェックしておく。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;これは自分で論文を書くときなど(あるかわかりませんが)に、参考文献をレビューする際の手がかりにもなるので、しっかりとやっておく必要があります。&lt;/p&gt;
-
-&lt;p&gt;second path　を行うことによって、この論文のメインとなる主張を根拠をつけて要約することができると思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;the-third-path&quot;&gt;The third path&lt;/h2&gt;
-
-&lt;p&gt;third path は論文の完全な理解のために頭の中で論文の結果を再現するプロセスです。&lt;/p&gt;
-
-&lt;p&gt;主に次のようなことを行います。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;定理の結果、アルゴリズムなどを論文のおいた仮定から再現する。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;strong&gt;third path は分野の初心者には非常に労力の要るプロセスであるということが述べられています。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;third pathを通して、論文やその関連研究において暗黙に仮定されている条件や抜けている条件などを見つけることができます。またその分野の潜在的な課題についても見えてくるでしょう。&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary></entry></feed>
+&lt;p&gt;&lt;/p&gt;</content><author><name></name></author><category term="machine-learning" /><category term="math" /><summary type="html">Adaboostとは</summary></entry></feed>
