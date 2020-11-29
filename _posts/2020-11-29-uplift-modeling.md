@@ -71,6 +71,14 @@ $$
 $$
 
 ### AUUCの定義
+あるスコア関数$f$でUpliftを予測したとする。このとき$f$が閾値$\alpha$以上のユーザーにだけ(つまり推定したUpliftが閾値$\alpha$より高いユーザーにだけ)介入を行うことを考える。
+$\alpha$は$[-1,1]$の範囲で動くので、$\alpha$について期待値を取る。
+
+$$
+\mathrm{AUUC}(f)= \mathbb{E}_{\alpha}[\text{Average Uplift}]
+$$
+
+スコア関数としては、Upliftを用いることが最適である(AUUCが最大となる)ことが示せるらしい。
 
 # 参考文献
 - [Uplift modeling for clinical trial data](http://people.cs.pitt.edu/~milos/icml_clinicaldata_2012/Papers/Oral_Jaroszewitz_ICML_Clinical_2012.pdf)
