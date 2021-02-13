@@ -2,7 +2,6 @@
 layout: post
 title: 個別因果効果の推定について
 tags: [statistics]
-toc: 
 ---
 
 * index
