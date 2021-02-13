@@ -51,10 +51,6 @@ $$
 
 実際には、$m(x), e(x)$がわからないので、プラグイン推定量を用いることになるが、その際の最適性の条件については[Nie and Wager(2017)](https://arxiv.org/abs/1712.04912) で議論されているR-Lossを用いた二段階推定を行えば良い。
 
-
-## 処置の個別性の検証方法
-
-
 # 参考文献
 
 - [Causal Inference(スタンフォード大学の講義資料, stats361)](https://web.stanford.edu/~swager/stats361.pdf)
