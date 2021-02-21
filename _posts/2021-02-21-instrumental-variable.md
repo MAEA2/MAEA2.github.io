@@ -4,6 +4,9 @@ title: 操作変数法について
 tags: [github]
 ---
 
+* index
+{:toc}
+
 # 操作変数とはなにか
 
 [Angrist, Graddy,
