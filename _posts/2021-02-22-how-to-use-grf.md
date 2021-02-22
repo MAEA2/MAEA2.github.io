@@ -9,11 +9,11 @@ tags: [statistics]
 
 # grfパッケージとは
 
-個別因果効果を推定できる手法であるGenelarized Random Forestを実装したRの[ライブラリ](https://grf-labs.github.io/grf)です。
+個別因果効果を推定できる手法であるGenelarized Random Forestを実装したRの[ライブラリ](https://grf-labs.github.io/grf)。
 
-# Generalized random forest とは
+# Generalized Random Forest とは
 
-Random forestを用いて、propensity scoreを推定することで 個別因果効果を推定できる手法。propensity scoreの明示的な推定が不要で共変量のみ指定すればよいのが特徴。
+Random forestを用いて、擬似的なpropensity scoreを推定することで 個別因果効果を推定する手法。propensity scoreの明示的な推定が不要で共変量のみ指定すれば良いのが特徴。
 手法の解説は ill-identified さんのブログ [[計量経済学] [機械学習] Generalized Random Forest (GRF) について](https://ill-identified.hatenablog.com/entry/2018/08/02/004625) が詳しいので ご参照のこと。
 
 # 使ってみる
@@ -38,7 +38,7 @@ $$
 \mathrm{Bernoulli}(0.25) && X_1 < 0
 \end{cases}
 \\
-&Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 >= 0)+0.2X_2)
+&Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 \geq 0)+0.2X_2)
 \end{align*}
 $$
 
@@ -103,7 +103,7 @@ $$
 & X_2\sim\mathrm{Uniform}(0,1)\\
 &W\sim \min(\mathrm{LogNormal}(X_1, 1), 1)
 \\
-&Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 >= 0)+0.2X_2)
+&Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 \geq 0)+0.2X_2)
 \end{align}
 $$
 
