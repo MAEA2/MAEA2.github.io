@@ -87,6 +87,7 @@ plot(X.test[, 1], tau.hat$predictions, ylim = range(tau.hat$predictions, 0, 2), 
 lines(X.test[, 1], 0.5 * (X.test[, 1] >= 0), col = 2, lty = 2)
 ```
 
+予測結果のプロットが以下である。赤の破線が正解なので、よく推定できていることがわかる。
 
 ![setting_1](/images/grf_setting_1.png)
 **設定1の推定結果**
@@ -98,20 +99,18 @@ lines(X.test[, 1], 0.5 * (X.test[, 1] >= 0), col = 2, lty = 2)
 介入$W$を連続変数の確率分布(対数正規分布)に置き換えてみる。
 
 $$
-\begin{align}
+\begin{align*}
 & X_1\sim\mathcal{N}(0,1)\\
 & X_2\sim\mathrm{Uniform}(0,1)\\
 &W\sim \min(\mathrm{LogNormal}(X_1, 1), 1)
 \\
 &Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 \geq 0)+0.2X_2)
-\end{align}
+\end{align*}
 $$
 
 $W$の分布が異なるだけなので、$\tau(x)$は設定1と同じになる。
 
 ### シミュレーション
-
-推定してみる。設定1よりは正解からずれてしまったが、ある程度正しく推定できている。
 
 ```r
 # Generate data.
@@ -137,6 +136,8 @@ tau.hat <- predict(tau.forest, X.test)
 plot(X.test[, 1], tau.hat$predictions, ylim = range(tau.hat$predictions, 0, 2), xlab = "x_1", ylab = "tau", type = "l")
 lines(X.test[, 1], 0.5 * (X.test[, 1] >= 0), col = 2, lty = 2)
 ```
+
+予測結果のプロットが以下である。設定1よりは正解からずれてしまったが、ある程度正しく推定できている。
 
 ![setting_2](/images/grf_setting_2.png)
 **設定2の推定結果**
