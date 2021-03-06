@@ -4,10 +4,12 @@ title: 欠測値処理について
 tags: [statistics]
 ---
 
-[欠測データ処理―Rによる単一代入法と多重代入法― ](https://www.kyoritsu-pub.co.jp/bookdetail/9784320112568)の勉強メモです。
-
-*index
+* index
 {:toc}
+
+# これは何
+
+[欠測データ処理―Rによる単一代入法と多重代入法― ](https://www.kyoritsu-pub.co.jp/bookdetail/9784320112568)の勉強メモです。
 
 # 欠測のパターン
 
