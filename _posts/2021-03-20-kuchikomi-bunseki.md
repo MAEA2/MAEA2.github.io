@@ -4,6 +4,9 @@ title: 口コミ分析システムの作り方を読んだ
 tags: [statistics]
 ---
 
+* index
+{:toc}
+
 # これはなに
 
 [口コミ分析システムの作り方](https://www.kindaikagaku.co.jp/information/kd0591.htm) という本を4章まで読んだのでその感想です。
