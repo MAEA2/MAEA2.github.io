@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 口コミ分析システムの作り方を読んだ
+title: クチコミ分析システムの作り方を読んだ
 tags: [statistics]
 ---
 
