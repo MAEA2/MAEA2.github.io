@@ -30,7 +30,7 @@ twitter_username: maea_2
 github_username:  maea2
 
 # Build settings
-theme: minima
+theme: jekyll-theme-minimal
 plugins:
   - jekyll-feed
 
