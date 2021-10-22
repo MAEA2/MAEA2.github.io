@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>行列式の性質 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="行列式の性質" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="線形代数の復習として理解しておくべき行列式の性質についてまとめておきました．随時更新されていく予定です．" />
+<meta property="og:description" content="線形代数の復習として理解しておくべき行列式の性質についてまとめておきました．随時更新されていく予定です．" />
+<link rel="canonical" href="http://localhost:4000/2017/07/30/determinant.html" />
+<meta property="og:url" content="http://localhost:4000/2017/07/30/determinant.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-07-30T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2017/07/30/determinant.html","headline":"行列式の性質","dateModified":"2017-07-30T00:00:00+09:00","datePublished":"2017-07-30T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/07/30/determinant.html"},"description":"線形代数の復習として理解しておくべき行列式の性質についてまとめておきました．随時更新されていく予定です．","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">行列式の性質</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-07-30T00:00:00+09:00" itemprop="datePublished">Jul 30, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>線形代数の復習として理解しておくべき行列式の性質についてまとめておきました．随時更新されていく予定です．</p>
+
+<h2 id="行列式の性質">行列式の性質</h2>
+
+<h3 id="定義">定義</h3>
+<p>$A={a_{ij}}\in\mathbb{R}^{n\times n}$の行列式$\det(A)$は</p>
+
+<script type="math/tex; mode=display">\det(A):=\sum_{\sigma\in S}\prod_{i=1}^n \mathrm{sgn}(\sigma)a_{i\sigma(i)}</script>
+
+<p>ただし$S$は$(1,2,\ldots,n)$の置換列全体の集合．$\mathrm{sgn}(\sigma)$は$\sigma$が偶置換のときは$1$，奇置換のときは$-1$となる．</p>
+
+<p>以下キャピタルは行列を表す．</p>
+
+<h3 id="行の公式">行の公式</h3>
+
+<script type="math/tex; mode=display">\det(\bm{a}_1,\ldots,r\bm{a}_i,\ldots,\bm{a}_n)
+=r\det(\bm{a}_1,\ldots,\bm{a}_i,\ldots,\bm{a}_n)</script>
+
+<script type="math/tex; mode=display">\det(\bm{a}_1,\ldots,\bm{a}_i,\ldots,r\bm{a}_i,\ldots,\bm{a}_n)=0</script>
+
+<h3 id="列の公式">列の公式</h3>
+
+<p><script type="math/tex">A=\begin{pmatrix}
+\bm{a}_1\\
+\bm{a}_2\\
+\vdots\\
+\bm{a}_n
+\end{pmatrix}</script> とする．</p>
+
+<script type="math/tex; mode=display">\det\begin{pmatrix}
+\bm{a}_1\\
+\vdots\\
+r\bm{a}_i\\
+\vdots\\
+\bm{a}_n
+\end{pmatrix}=r\det\begin{pmatrix}
+\bm{a}_1\\
+\vdots\\
+\bm{a}_i\\
+\vdots\\
+\bm{a}_n
+\end{pmatrix}</script>
+
+<script type="math/tex; mode=display">\det\begin{pmatrix}
+\bm{a}_1\\
+\vdots\\
+\bm{a}_i\\
+\vdots\\
+r\bm{a}_i\\
+\vdots\\
+\bm{a}_n
+\end{pmatrix}=0</script>
+
+<h3 id="余因子展開">余因子展開</h3>
+<p>$A={a_{ij}}$ とする．</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+\det(A)&=\sum_{j=1}^n(-1)^{i+j}a_{ij}\det A[i,j]
+\quad(i=1,2,\ldots,n)\\
+&=\sum_{i=1}^n(-1)^{i+j}a_{ij}\det A[i,j]
+\quad(j=1,2,\ldots,n)
+\end{align*} %]]></script>
+
+<p>ただし$A[i,j]$ は$A$より$i$行と$j$列を除いた行列．</p>
+
+<p>$(-1)^{i+j}\det A[i,j]$ を $A$ の余因子といい，$\tilde{A}_{ij}$とかく．また</p>
+
+<script type="math/tex; mode=display">\tilde{A}=\{\tilde{A}_{ji}\}</script>
+
+<p>を余因子行列という．成分が転置されているので注意する．</p>
+<h3 id="余因子行列の性質">余因子行列の性質</h3>
+
+<p>$i$行で余因子展開を行うと</p>
+
+<script type="math/tex; mode=display">\det(A)=\sum_{j=1}^na_{ij}\tilde{A}_{ij}</script>
+
+<p>$A[i,1],A[i,2],\ldots,A[i,n]$ はすべて $A$ の $i$ 行が除かれているので</p>
+
+<p><script type="math/tex">\tilde{A}_{i1},\tilde{A}_{i2},\ldots,\tilde{A}_{in}</script> は $A$ の $i$ 行の成分を含まない．いま行列 $A$ の $i$ 行目を $k$ 行目に書き換えた行列の行列式を考えると，これは行列式の性質より0となる．この行列式を余因子展開することで次の関係式が得られる．</p>
+
+<script type="math/tex; mode=display">\sum_{j=1}^na_{kj}\tilde{A}_{ij}=0</script>
+
+<p>がわかる．
+上の式で $k=i$ の場合は余因子展開を行っていることになるから，</p>
+
+<script type="math/tex; mode=display">\sum_{j=1}^na_{kj}\tilde{A}_{ij}=\det(A)\delta_{ki}</script>
+
+<p>列についても同様に考えることで</p>
+
+<script type="math/tex; mode=display">\sum_{i=1}^na_{ik}\tilde{A}_{ij}=\det(A)\delta_{kj}</script>
+
+<p>これより
+<script type="math/tex">\begin{align*}
+\tilde{A}^\top A=\det(A)E
+\end{align*}</script></p>
+<h3 id="逆行列公式">逆行列公式</h3>
+<p>$A$が正則であるとき</p>
+
+<script type="math/tex; mode=display">A^{-1}=\frac{\tilde{A}}{\det A}</script>
+
+<h3 id="ブロック行列の行列式">ブロック行列の行列式</h3>
+<p><script type="math/tex">% <![CDATA[
+\det
+\begin{pmatrix}
+A&C\\
+O&B
+\end{pmatrix}=\det
+\begin{pmatrix}
+A&O\\
+C&B
+\end{pmatrix}=\det(A)\det(B) %]]></script></p>
+
+<h3 id="積の行列式">積の行列式</h3>
+
+<script type="math/tex; mode=display">\det(AB)=\det(A)\det(B)</script>
+
+<h3 id="固有値との関係">固有値との関係</h3>
+
+<script type="math/tex; mode=display">\det(A)=\prod_{\lambda\in\mathsf{Spec}(A)}\lambda</script>
+
+<p>ただし $\mathsf{Spec}(A)$は$A$の重複も含めた$n$個の固有値の集合．</p>
+
+  </div><a class="u-url" href="/2017/07/30/determinant.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

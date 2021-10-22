@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>論文の読み方について | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="論文の読み方について" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="http://localhost:4000/2018/09/10/how-to-read-a-paper.html" />
+<meta property="og:url" content="http://localhost:4000/2018/09/10/how-to-read-a-paper.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-09-10T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2018/09/10/how-to-read-a-paper.html","headline":"論文の読み方について","dateModified":"2018-09-10T00:00:00+09:00","datePublished":"2018-09-10T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/09/10/how-to-read-a-paper.html"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">論文の読み方について</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-09-10T00:00:00+09:00" itemprop="datePublished">Sep 10, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="markdown-toc">
+  <li><a href="#経緯" id="markdown-toc-経緯">経緯</a></li>
+  <li><a href="#やり方" id="markdown-toc-やり方">やり方</a>    <ul>
+      <li><a href="#the-first-path" id="markdown-toc-the-first-path">The first path</a></li>
+      <li><a href="#the-second-path" id="markdown-toc-the-second-path">The second path</a></li>
+      <li><a href="#the-third-path" id="markdown-toc-the-third-path">The third path</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="経緯">経緯</h1>
+
+<p><a href="https://www.albany.edu/spatial/WebsiteFiles/ResearchAdvices/how-to-read-a-paper.pdf">How to read a paper</a>という
+論文の読み方についてのガイドが非常に参考になったので、自分なりにまとめてみたいと思います。</p>
+
+<h1 id="やり方">やり方</h1>
+
+<p>このガイドではThree-pass approachというものを提案しています。論文を視野を変えて3ステップに分けて読むということです。次の3ステップからなります。よくある感じのやり方ですが、各やり方についての説明が具体的なので、すぐに実践できます。</p>
+
+<h2 id="the-first-path">The first path</h2>
+
+<p>first path では論文を「ざっと」読んで概要を把握するということをします。具体的には次のような手順で行います。</p>
+
+<ol>
+  <li>
+    <p>論文のタイトル、アブストラクト、イントロダクションを注意深く読む。</p>
+  </li>
+  <li>
+    <p>章や説のトピックセンテンス(だいたい1行目が多い)を読む。</p>
+  </li>
+  <li>
+    <p>数式などをちらっと見て、アルゴリズムなどがどの分野に関わっていそうな論文かを判断する。</p>
+  </li>
+  <li>
+    <p>結論を読む。</p>
+  </li>
+  <li>
+    <p>参考文献一覧を読む。以前読んだ文献があるかどうかをチェックする。</p>
+  </li>
+</ol>
+
+<p>これらの手順を行えば、論文に関して疑問に答えられるようになっているはずです。</p>
+
+<ol>
+  <li>
+    <p>この論文はどの分野の論文か。</p>
+  </li>
+  <li>
+    <p>他の論文がこの論文とどのような関係があるか。どのような理論が用いられているか。</p>
+  </li>
+  <li>
+    <p>この論文の貢献は何か。</p>
+  </li>
+  <li>
+    <p>論文は明快に書かれているか。</p>
+  </li>
+</ol>
+
+<p>明快に書かれているかというのは、これが満たされていないと論文がリジェクトされてしまうので、ちゃんとした論文であればアブストラクトやイントロダクションがその論文のわかりやすい要約になっているはずだということです。</p>
+
+<p>first path は自分の研究内容とは関係のない論文(だが将来的には関係するかもしれないような論文)を判断するプロセスと言えます。</p>
+
+<h2 id="the-second-path">The second path</h2>
+
+<p>second path は論文の詳細を把握するプロセスです。</p>
+
+<ol>
+  <li>
+    <p>論文をfirst path のときよりも注意深く読む。但し、定理の証明などの細部は飛ばして読む。</p>
+  </li>
+  <li>
+    <p>読んでいる途中で理解できなかったこと・疑問に思ったことをメモしておく。論文該当箇所などに直接書き込んでもいいかも。</p>
+  </li>
+  <li>
+    <p>論文の図表を注意深く見ておく。特にグラフはしっかり見る。軸はちゃんと付いているか、実験結果にエラーバーは付いているかなどを確認する。</p>
+  </li>
+  <li>
+    <p>論文に関係しそうなまだ読んでいない参考文献をチェックしておく。</p>
+  </li>
+</ol>
+
+<p>これは自分で論文を書くときなど(あるかわかりませんが)に、参考文献をレビューする際の手がかりにもなるので、しっかりとやっておく必要があります。</p>
+
+<p>second path　を行うことによって、この論文のメインとなる主張を根拠をつけて要約することができると思います。</p>
+
+<h2 id="the-third-path">The third path</h2>
+
+<p>third path は論文の完全な理解のために頭の中で論文の結果を再現するプロセスです。</p>
+
+<p>主に次のようなことを行います。</p>
+
+<ol>
+  <li>定理の結果、アルゴリズムなどを論文のおいた仮定から再現する。</li>
+</ol>
+
+<p><strong>third path は分野の初心者には非常に労力の要るプロセスであるということが述べられています。</strong></p>
+
+<p>third pathを通して、論文やその関連研究において暗黙に仮定されている条件や抜けている条件などを見つけることができます。またその分野の潜在的な課題についても見えてくるでしょう。</p>
+
+  </div><a class="u-url" href="/2018/09/10/how-to-read-a-paper.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

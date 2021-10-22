@@ -1,0 +1,17 @@
+@startuml
+skinparam dpi 300
+skinparam actorStyle awesome
+
+:著者: --> (対象物): 接する\n購入する\n使う
+note left of :著者:
+  著者属性(例. 20代、男性、会社員...)
+end note
+note bottom of (対象物)
+  対象物属性(例. 価格、サイズ、...)
+end note
+:著者: --> (センチメント): センチメントの\n発生
+:著者: --> (記事): 記事の\n執筆
+note bottom of (記事)
+  記事にはセンチメントの記述が含まれる。
+end note 
+@enduml

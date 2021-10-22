@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Adaboostは指数損失を最小化している。 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Adaboostは指数損失を最小化している。" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Adaboostとは" />
+<meta property="og:description" content="Adaboostとは" />
+<link rel="canonical" href="http://localhost:4000/2019/03/30/adaboost.html" />
+<meta property="og:url" content="http://localhost:4000/2019/03/30/adaboost.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-30T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2019/03/30/adaboost.html","headline":"Adaboostは指数損失を最小化している。","dateModified":"2019-03-30T00:00:00+09:00","datePublished":"2019-03-30T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/03/30/adaboost.html"},"description":"Adaboostとは","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Adaboostは指数損失を最小化している。</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-03-30T00:00:00+09:00" itemprop="datePublished">Mar 30, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="adaboostとは">Adaboostとは</h1>
+
+<p>Adaboostは単純な分類器(弱学習器)をたくさん集めて、分類モデルを学習するときのアルゴリズムの一つです。</p>
+
+<p>いま、$Y\in\{-1,1\}$ を正解ラベル、$X\in\mathcal{X}$ を特徴量とする2値分類問題を考えます。</p>
+
+<p>$G_m:\mathcal{X}\to\{-1,1\}$ となる分類器を$M$個(m=1,2,\ldots,M)用意します。</p>
+
+<p>これらを用いて分類器 $G(x)$ を</p>
+
+<script type="math/tex; mode=display">G(x)=\mathrm{sign}\left(\sum_{m=1}^M \alpha_mG_m(x)\right)</script>
+
+<p>で作ることを考えます。</p>
+
+<p>訓練データ ${x_i,y_i}_{i=1}^N\subset \{-1,1\}\times\mathcal{X}$ が得られているとします。</p>
+
+<p>このとき、$\{G_m\}<em>{m=1}^M, \{\alpha_m\}</em>{m=1}^M$ を学習するのが目標です。</p>
+
+<p>Adaboostは次のようなアルゴリズムです。</p>
+
+<p><img src="/images/adaboost.png" alt="fig" />
+<strong>Adaboostのアルゴリズム(カステラ本p339より引用)</strong></p>
+
+<p>Adaboostでは各訓練データに対して重み$w_i$を $m$ について逐次更新します。各 $m$ で $w_i$ に従った重み付きのフィッティングを行い $G_m$ を決定します。</p>
+
+<p>イメージとしては、前回で誤分類したデータに対しては重みを重く、正解したデータに対しては重みは変えないというような感じで $w_i$ を決定しています。</p>
+
+<h1 id="alpha_m-の根拠">$\alpha_m$ の根拠</h1>
+
+<p>$w_i$ を更新する際に $\exp(\alpha_m\cdot I(y_i\neq G_m(x_i)))$ 倍していますがこれにはどんな根拠があるのでしょうか。実は指数損失の最小化を考えると、自然とこの値が導かれるというのが今日これから書く内容です。</p>
+
+<h1 id="指数損失の最小化から-alpha_m-を出す">指数損失の最小化から $\alpha_m$ を出す</h1>
+
+<p>指数損失とは</p>
+
+<script type="math/tex; mode=display">\exp(-yG(x))</script>
+
+<p>で定義される損失です。</p>
+
+<p>いま</p>
+
+<script type="math/tex; mode=display">f_m(x) := \sum_{i=1}^m \beta_i G_i(x)</script>
+
+<p>と定めて、各 $m$ に対して、</p>
+
+<script type="math/tex; mode=display">(\beta_m, G_m)　:= \mathrm{argmin}_{\beta, G} \sum_{i=1}^N \exp(-y_i(f_{m-1}(x_i)+\beta G(x_i)))</script>
+
+<p>で逐次的に $(\beta_m, G_m)$ を決定していくことを考えます。</p>
+
+<p>$w_i^{(m)}:=\exp(-y_if_{m-1}(x_i))$ と置くと、</p>
+
+<script type="math/tex; mode=display">(\beta_m, G_m)　:= \mathrm{argmin}_{\beta, G} \sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))</script>
+
+<p>と書き換える事ができます。$(\beta_m, G_m)$　は指数損失の重み付き和を最小にするように決定しようというわけです。</p>
+
+<p>ここで指数損失の重み付き和について次のような書き換えを行います。</p>
+
+<div class="slide">
+
+$$
+\begin{align}
+&amp;\sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))\\
+=&amp;\sum_{y_i=G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i)) +
+\sum_{y_i\neq G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i)))\\
+=&amp;\sum_{i=1}^N w_i^{(m)}\exp(-y_i\beta G(x_i))(1-I(y_i\neq G_m(x_i))) +
+\sum_{y_i\neq G_i(x)} w_i^{(m)}\exp(-y_i\beta G(x_i))I(y_i\neq G_m(x_i))\\
+=&amp;(e^{\beta}+e^{-\beta})\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i)) + \sum_{i=1}^N w_i^{(m)}e^{-\beta}
+\end{align}
+$$
+
+</div>
+
+<p>これより $G_m$は $\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))$ を最小にするように決めれば良いことがわかります。そのように決定した $G_m$ を代入し、それを $\beta$ について最小化するような $\beta$ を求めれば $\beta_m$ も決定します。</p>
+
+<p>上の式を $\beta$ について偏微分して整理すると</p>
+
+<script type="math/tex; mode=display">e^{2\beta} = \frac{\sum_{i=1}^N w_i^{(m)}(1-I(y_i\neq G_m(x_i)))}{\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))}</script>
+
+<p>となります。いま重み付き誤差率 $\mathrm{err}_m$ を</p>
+
+<script type="math/tex; mode=display">\mathrm{err}_m = \frac{\sum_{i=1}^N w_i^{(m)}I(y_i\neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}</script>
+
+<p>で定めると</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+&e^{2\beta} = \frac{1-\mathrm{err}_m}{\mathrm{err}_m}\\
+&\therefore \beta_m = \frac{1}{2} \log\left( \frac{1-\mathrm{err}_m}{\mathrm{err}_m}\right)
+\end{align} %]]></script>
+
+<p>となります。$\alpha = 2\beta_m$ と置けば、Adaboostの $\alpha_m$ が出てきました。</p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="http://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of
+Statistical Learning 10章</a></li>
+</ul>
+
+<p></p>
+
+  </div><a class="u-url" href="/2019/03/30/adaboost.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

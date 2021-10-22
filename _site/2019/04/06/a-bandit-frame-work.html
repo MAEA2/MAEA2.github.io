@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>A Bandit Framework for Optimal Selection of Reinforcement Learning Agentsを読んだ | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="A Bandit Framework for Optimal Selection of Reinforcement Learning Agentsを読んだ" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="要旨" />
+<meta property="og:description" content="要旨" />
+<link rel="canonical" href="http://localhost:4000/2019/04/06/a-bandit-frame-work.html" />
+<meta property="og:url" content="http://localhost:4000/2019/04/06/a-bandit-frame-work.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-06T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2019/04/06/a-bandit-frame-work.html","headline":"A Bandit Framework for Optimal Selection of Reinforcement Learning Agentsを読んだ","dateModified":"2019-04-06T00:00:00+09:00","datePublished":"2019-04-06T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/04/06/a-bandit-frame-work.html"},"description":"要旨","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">A Bandit Framework for Optimal Selection of Reinforcement Learning Agentsを読んだ</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-04-06T00:00:00+09:00" itemprop="datePublished">Apr 6, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="要旨">要旨</h2>
+
+<p>一般に強化学習を実世界に応用するとき、環境の情報は十分には得られない(ゲームのルールがわからない)。また環境から報酬を得ること自体のコストが高い(無制限に試行できない)。応用する問題によって適切なエージェントは異なるので、複数のエージェントから環境に最も適応した個体を選ぶバンディット問題とみなして最適なエージェントを選ぶことを提案している。その際、情報理論的には次の状態の分布とモデルのパラメータの分布の相互情報量が最大化となるもの(もっとも驚きが大きいものを)選ぶのが良い。ただ、モデルのパラメータの事後分布を直接計算することは難しいので、そこを変分近似した。</p>
+
+<h2 id="bandit問題">Bandit問題</h2>
+
+<p>$K$ 台のスロットマシンがそれぞれ期待値 $\mu_i$ (未知) に設定されているときに、最大の期待値 $\mu^\ast:=\max_{i} \mu_i$ を持つスロットマシンを探索するという問題です。なるべく探索回数を少なくして，得られる報酬も最大化するのが目標です。</p>
+
+<p>スロットマシンの設定によって名前がついている。[2]にわかりやすくかいてあって参考になりました。</p>
+
+<ul>
+  <li>確率的Bandit</li>
+  <li>敵対的Bandit</li>
+</ul>
+
+<h2 id="強化学習としてのbandit問題">強化学習としてのBandit問題</h2>
+
+<p>強化学習で扱うのは行動によって環境から報酬が得られるという状況において、何度か試行することで将来の報酬を最大化するような行動を探そうという設定の問題です。Bandit問題において毎回スロットマシンを引くことを行動とみなすと、Bandit問題は強化学習の問題とみなすことができます。</p>
+
+<h2 id="本論文の貢献">本論文の貢献</h2>
+
+<p>おそらく最適なエージェントの選択をバンディットとみなした点(？)</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ul>
+  <li>[1] <a href="https://arxiv.org/abs/1902.03657">A Bandit Framework for Optimal Selection of Reinforcement Learning Agents</a></li>
+  <li>[2] <a href="http://ibisml.org/archive/ibis2014/ibis2014_bandit.pdf">多腕バンディット問題の
+理論とアルゴリズム</a></li>
+</ul>
+
+  </div><a class="u-url" href="/2019/04/06/a-bandit-frame-work.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

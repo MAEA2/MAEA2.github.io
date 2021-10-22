@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>BigQuery+pythonでBrunner-Munzel検定を行う。 | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="BigQuery+pythonでBrunner-Munzel検定を行う。" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="モチベーション" />
+<meta property="og:description" content="モチベーション" />
+<link rel="canonical" href="http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html" />
+<meta property="og:url" content="http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-22T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html","headline":"BigQuery+pythonでBrunner-Munzel検定を行う。","dateModified":"2021-10-22T00:00:00+09:00","datePublished":"2021-10-22T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html"},"description":"モチベーション","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">BigQuery+pythonでBrunner-Munzel検定を行う。</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-10-22T00:00:00+09:00" itemprop="datePublished">Oct 22, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="モチベーション">モチベーション</h1>
+
+<p>2つの確率変数 $X_1, X_2$ に対して、これらが同じ分布に従うという帰無仮説を検定したいことがあります。
+正規性が成り立たない場合に頑健なノンパラメトリック検定としてはWilcoxon-Mann-Whitney検定が有名ですが、Wilcoxon-Mann-Whitney検定は2つの分布の分散が異なる場合などに頑健でないことが知られています。
+Brunner-Munzel検定は正規性が成り立たず、分散が異なる場合にも適用可能な検定の手法です。</p>
+
+<p>Brunner-Munzel検定ではデータの順位を計算する処理がありますが、データがBigQuery上にある場合は順位計算などの重めの処理をBigQuery上で処理してしまうのが良いです。
+本記事ではBrunner-Munzel検定をBigQuery+pythonで行う方法を紹介します。</p>
+
+<h1 id="コード">コード</h1>
+
+<p><a href="https://oku.edu.mie-u.ac.jp/~okumura/stat/brunner-munzel.html">奥村先生のページ</a>で使われているデータ例を用います。</p>
+
+<p>2つのデータ列 <code class="language-plaintext highlighter-rouge">[1,2,1,1,1,1,1,1,1,1,2,4,1,1]</code> と <code class="language-plaintext highlighter-rouge">[3,3,4,3,1,2,3,1,1,5,4]</code> が同じ分布に従うかどうかを Brunner-Munzel検定で確かめます。</p>
+
+<p>実際のデータに適用する場合は <code class="language-plaintext highlighter-rouge">dataset_1</code> や <code class="language-plaintext highlighter-rouge">dataset_2</code> を検定したいものに置き換えてください。</p>
+
+<h2 id="統計量の集計">統計量の集計</h2>
+
+<script src="https://gist.github.com/MAEA2/ae81048a9177a7347d27f50c6af50ef4.js"></script>
+
+<p>上記のクエリをBigQueryで回すと、以下の結果が得られる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>dataset_number</th>
+      <th>n</th>
+      <th>avg_whole_rank</th>
+      <th>variance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>14</td>
+      <td>9.821428571428573</td>
+      <td>4.21565934065934</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>11</td>
+      <td>17.045454545454547</td>
+      <td>12.922727272727276</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="t統計量p値の計算">t統計量/P値の計算</h2>
+
+<p>集計した統計量からt統計量を計算します。pythonのコードは以下です。</p>
+
+<script src="https://gist.github.com/MAEA2/1af0a491631f07874fb33ee01925ff1a.js"></script>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$python brunner_munzel.py 14 11 4.21565934065934 12.922727272727276 9.821428571428573 17.045454545454547
+# test statistic: 3.1374674823029496 degrees of freedom: 17.682841979481545 p-value: 0.0057862086661
+</code></pre></div></div>
+
+<h2 id="検算">検算</h2>
+
+<p>Rには<code class="language-plaintext highlighter-rouge">lawstat</code>パッケージにBrunner-Munzel検定を行うことができる関数 <code class="language-plaintext highlighter-rouge">brunner.munzel.test()</code> があります。
+先程用いたデータ例を入力してみると同じ結果になっていることがわかります。</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span><span class="w"> </span><span class="n">library</span><span class="p">(</span><span class="s2">"lawstat"</span><span class="p">)</span><span class="w">
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">4</span><span class="p">)</span><span class="w">
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">brunner.munzel.test</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w">
+
+	</span><span class="n">Brunner</span><span class="o">-</span><span class="n">Munzel</span><span class="w"> </span><span class="n">Test</span><span class="w">
+
+</span><span class="n">data</span><span class="o">:</span><span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">y</span><span class="w">
+</span><span class="n">Brunner</span><span class="o">-</span><span class="n">Munzel</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="n">Statistic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.1375</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">17.683</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">-</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.005786</span><span class="w">
+</span><span class="m">95</span><span class="w"> </span><span class="n">percent</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="n">interval</span><span class="o">:</span><span class="w">
+ </span><span class="m">0.5952169</span><span class="w"> </span><span class="m">0.9827052</span><span class="w">
+</span><span class="n">sample</span><span class="w"> </span><span class="n">estimates</span><span class="o">:</span><span class="w">
+</span><span class="n">P</span><span class="p">(</span><span class="n">X</span><span class="o">&lt;</span><span class="n">Y</span><span class="p">)</span><span class="m">+.5</span><span class="o">*</span><span class="n">P</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">Y</span><span class="p">)</span><span class="w"> 
+        </span><span class="m">0.788961</span><span class="w"> 
+</span></code></pre></div></div>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="https://oku.edu.mie-u.ac.jp/~okumura/stat/brunner-munzel.html">Brunner-Munzel検定</a></li>
+  <li><a href="https://hoxo-m.hatenablog.com/entry/20150217/p1">マイナーだけど最強の統計的検定 Brunner-Munzel 検定</a></li>
+  <li><a href="https://ajhjhaf.hatenablog.com/entry/2018/12/22/160652">ScipyでBrunner-Munzel検定</a></li>
+</ul>
+
+  </div><a class="u-url" href="/2021/10/22/brunner-munzel-bigquery.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

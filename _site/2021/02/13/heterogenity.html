@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>個別因果効果の推定について | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="個別因果効果の推定について" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="http://localhost:4000/2021/02/13/heterogenity.html" />
+<meta property="og:url" content="http://localhost:4000/2021/02/13/heterogenity.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-13T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2021/02/13/heterogenity.html","headline":"個別因果効果の推定について","dateModified":"2021-02-13T00:00:00+09:00","datePublished":"2021-02-13T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/02/13/heterogenity.html"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">個別因果効果の推定について</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-02-13T00:00:00+09:00" itemprop="datePublished">Feb 13, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="markdown-toc">
+  <li><a href="#個別因果効果とは" id="markdown-toc-個別因果効果とは">個別因果効果とは</a></li>
+  <li><a href="#個別因果効果の定義" id="markdown-toc-個別因果効果の定義">個別因果効果の定義</a></li>
+  <li><a href="#個別因果効果の推定方法" id="markdown-toc-個別因果効果の推定方法">個別因果効果の推定方法</a>    <ul>
+      <li><a href="#セミパラメトリックモデリング" id="markdown-toc-セミパラメトリックモデリング">セミパラメトリックモデリング</a></li>
+    </ul>
+  </li>
+  <li><a href="#参考文献" id="markdown-toc-参考文献">参考文献</a></li>
+</ul>
+
+<h1 id="個別因果効果とは">個別因果効果とは</h1>
+
+<p>ある処置を施したとき、各対象にどのような影響を与えるかを知りたいとする。これを<strong>個別因果効果</strong>という。個別因果効果が知りたい場面として、例えば薬の治験が考えられる。一般に薬を投与される患者によって、薬の副作用は異なると考えられる。<strong>平均因果効果</strong>では興味のある集団に対する処置の影響を測るものだが、<strong>個別因果効果</strong>は各対象に対する処置の影響を測るものである。</p>
+
+<h1 id="個別因果効果の定義">個別因果効果の定義</h1>
+
+<p>いま、ある共変量$X_i$を持った対象についての処置の効果を考える。処置変数を$W_i$, 処置を受けたときと受けなかったときのアウトカムをそれぞれ$Y_i(1), Y_i(0)$とすると、条件付き平均因果効果$\tau(x)$は</p>
+
+<script type="math/tex; mode=display">\tau(x)=\mathbb{E}[Y_i(1)-Y_i(0)|X_i=x]</script>
+
+<p>で定義される<sup id="fnref:cate"><a href="#fn:cate" class="footnote">1</a></sup>。</p>
+
+<h1 id="個別因果効果の推定方法">個別因果効果の推定方法</h1>
+
+<h2 id="セミパラメトリックモデリング">セミパラメトリックモデリング</h2>
+
+<p>$\tau(x)$に関して以下の式が成り立つと考える。</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+& Y_i(w)=f(X_i)+w\cdot\tau(X_i)+\epsilon_i(w)\\
+& \tau(x)={\beta}^\top{\psi}(x)\,,{\psi}:\mathcal{X}\to\mathbb{R}^k, {\beta}\in\mathbb{R}^k\\
+& e(x):=\mathbb{P}[W_i=1|X_i]
+\end{align} %]]></script>
+
+<p><a href="https://www.jstor.org/stable/1912705?seq=1">Robinson(1998)</a>より、これは</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+& Y_i(W_i)-m(X_i)=(W_i-e(X_i))\psi(X_i)^\top\beta+\epsilon_i\\
+& m(x)=\mathbb{E}[Y_i|X_i=x] = f(X_i)+e(X_i)\cdot\psi(X_i)^\top\beta
+\end{align} %]]></script>
+
+<p>と書き換えられて、これをOLSで推定した$\beta$の推定値を$\hat{\theta}^\ast$とすると、$O(1/\sqrt{n})$のオーダーで$\beta$との一致性を持ち、漸近正規となる。</p>
+
+<p>実際には、$m(x), e(x)$がわからないので、プラグイン推定量を用いることになるが、その際の最適性の条件については<a href="https://arxiv.org/abs/1712.04912">Nie and Wager(2017)</a> で議論されているR-Lossを用いた二段階推定を行えば良い。</p>
+
+<h1 id="参考文献">参考文献</h1>
+
+<ul>
+  <li><a href="https://web.stanford.edu/~swager/stats361.pdf">Causal Inference(スタンフォード大学の講義資料, stats361)</a></li>
+  <li><a href="https://www.jstor.org/stable/1912705?seq=1">Robinson(1998)</a></li>
+  <li><a href="https://arxiv.org/abs/1712.04912">Nie and Wager(2017)</a></li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:cate">
+      <p>ここでは同じ共変量を持つ対象同士については処置に対して同じ影響を受けるという前提に立っている。 <a href="#fnref:cate" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div><a class="u-url" href="/2021/02/13/heterogenity.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

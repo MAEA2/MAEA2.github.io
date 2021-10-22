@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Squared Digit Sum | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Squared Digit Sum" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="きっかけ" />
+<meta property="og:description" content="きっかけ" />
+<link rel="canonical" href="http://localhost:4000/2018/03/28/square-digit-sum.html" />
+<meta property="og:url" content="http://localhost:4000/2018/03/28/square-digit-sum.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-03-28T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2018/03/28/square-digit-sum.html","headline":"Squared Digit Sum","dateModified":"2018-03-28T00:00:00+09:00","datePublished":"2018-03-28T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/03/28/square-digit-sum.html"},"description":"きっかけ","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Squared Digit Sum</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-03-28T00:00:00+09:00" itemprop="datePublished">Mar 28, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="きっかけ">きっかけ</h2>
+
+<p>結城先生の<a href="https://twitter.com/hyuki/status/977808341383593985">引用リツイート</a></p>
+
+<h2 id="おもしろいループ">おもしろいループ</h2>
+
+<p>$n \in\mathbb{N}$とします。</p>
+
+<p>$n$を$10$進数で表記したときの表示を$n_{(10)}$と表すことにします。</p>
+
+<p>このとき$n_{(10)}$の各桁の平方和$s_n^{10}$をとります。$n$を$s_n^{10}$に対応させる関数を$f_{10}$とします。</p>
+
+<p>$f_{10}$を繰り返し適用した数列、すなわち</p>
+
+<script type="math/tex; mode=display">n_{(10)},f_{10}(n_{(10)}),f_{10}(f_{10}(n_{(10)})),\ldots</script>
+
+<p>を考えます。</p>
+
+<p>このとき、数列$n,f_{10}(n_{(10)}),f_{10}(f_{10}(n_{(10)})),\ldots$は,次の$2$つのパターンに落ちるそうです。</p>
+
+<ul>
+  <li>
+    <p>パターン1: 1が無限に続く</p>
+  </li>
+  <li>
+    <p>パターン2: $4<em>{(10)},16</em>{(10)},37<em>{(10)},58</em>{(10)},89<em>{(10)},145</em>{(10)},42<em>{(10)},20</em>{(10)}$ のループに落ちる。</p>
+  </li>
+</ul>
+
+<p>これはとても不思議！</p>
+
+<p>本当かどうかを確かめてみましょう。</p>
+
+<p>$n=1$から$n=100$について$n_{(10)},f_{10}(n_{(10)}),f_{10}(f_10(n_{(10)})),\ldots$を調べてみます調べてみます。以下はループするまでの数列を計算するプログラムです。$10$進数なので<code class="language-plaintext highlighter-rouge">base=10</code>とします。</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+</span><span class="n">trans_decimal</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span><span class="n">base</span><span class="p">){</span><span class="w">
+  </span><span class="n">digits</span><span class="o">&lt;-</span><span class="nf">as.character</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span><span class="n">digits</span><span class="p">,</span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"(%d)"</span><span class="p">,</span><span class="n">base</span><span class="p">)),</span><span class="n">collapse</span><span class="o">=</span><span class="s2">"|"</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">decimal_digits</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="n">base</span><span class="o">&gt;</span><span class="m">10</span><span class="p">){</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="s2">"Out of range of base"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w">
+  </span><span class="n">digits</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">()</span><span class="w">
+  </span><span class="n">i</span><span class="o">&lt;</span><span class="m">-0</span><span class="w">
+  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">%%</span><span class="w"> </span><span class="n">base</span><span class="o">^</span><span class="n">i</span><span class="w"> </span><span class="o">!=</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">%%</span><span class="w"> </span><span class="n">base</span><span class="o">^</span><span class="p">(</span><span class="n">i</span><span class="m">+1</span><span class="p">)</span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="o">%%</span><span class="w"> </span><span class="n">base</span><span class="o">^</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">base</span><span class="o">^</span><span class="n">i</span><span class="w">
+    </span><span class="n">digits</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">digits</span><span class="p">)</span><span class="w">
+    </span><span class="n">i</span><span class="o">&lt;-</span><span class="n">i</span><span class="m">+1</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">add_square_digits</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="p">){</span><span class="w">
+  </span><span class="n">digits</span><span class="o">&lt;-</span><span class="n">decimal_digits</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="p">)</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">digits</span><span class="o">*</span><span class="n">digits</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">find_loop</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">n_start</span><span class="p">,</span><span class="n">base</span><span class="p">){</span><span class="w">
+  </span><span class="n">loop</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">(</span><span class="n">n_start</span><span class="p">)</span><span class="w">
+  </span><span class="n">n_tmp</span><span class="o">&lt;-</span><span class="n">add_square_digits</span><span class="p">(</span><span class="n">n_start</span><span class="p">,</span><span class="n">base</span><span class="p">)</span><span class="w">
+  </span><span class="k">while</span><span class="p">(</span><span class="n">n_tmp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">n_tmp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">loop</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">1</span><span class="p">){</span><span class="w">
+    </span><span class="n">loop</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span><span class="n">n_tmp</span><span class="p">)</span><span class="w">
+    </span><span class="n">n_tmp</span><span class="o">&lt;-</span><span class="n">add_square_digits</span><span class="p">(</span><span class="n">n_tmp</span><span class="p">,</span><span class="n">base</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span><span class="n">n_tmp</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">out_put_loop</span><span class="o">&lt;-</span><span class="k">function</span><span class="p">(</span><span class="n">seq</span><span class="p">){</span><span class="w">
+  </span><span class="n">l</span><span class="o">&lt;-</span><span class="nf">length</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">==</span><span class="m">1</span><span class="p">){</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">))</span><span class="w">
+  </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w">
+    </span><span class="n">i_start</span><span class="o">&lt;-</span><span class="n">which</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="n">l</span><span class="p">]</span><span class="o">==</span><span class="n">seq</span><span class="p">[</span><span class="n">l</span><span class="p">])</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">i_start</span><span class="o">:</span><span class="p">(</span><span class="n">l</span><span class="m">-1</span><span class="p">)])</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+
+</span><span class="n">base</span><span class="o">=</span><span class="m">10</span><span class="w">
+
+</span><span class="n">n_sample</span><span class="o">&lt;-</span><span class="n">sample.int</span><span class="p">(</span><span class="m">10000</span><span class="p">,</span><span class="m">10</span><span class="p">)</span><span class="w">
+
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">){</span><span class="w">
+  </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">find_loop</span><span class="p">(</span><span class="n">n_sample</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span><span class="w">
+  </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">sapply</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">n</span><span class="p">){</span><span class="w">
+    </span><span class="n">digits</span><span class="o">&lt;-</span><span class="n">decimal_digits</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">trans_decimal</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">))</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">collapse</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|6|5|0|2|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
+#### [1] "|9|0|4|9|(10)-&gt;|1|7|8|(10)-&gt;|1|1|4|(10)-&gt;|1|8|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
+#### [1] "|8|1|3|(10)-&gt;|7|4|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
+#### [1] "|9|9|0|4|(10)-&gt;|1|7|8|(10)-&gt;|1|1|4|(10)-&gt;|1|8|(10)-&gt;|6|5|(10)-&gt;|6|1|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)"
+#### [1] "|8|1|1|8|(10)-&gt;|1|3|0|(10)-&gt;|1|0|(10)-&gt;|1|(10)"
+#### [1] "|2|5|7|5|(10)-&gt;|1|0|3|(10)-&gt;|1|0|(10)-&gt;|1|(10)"
+#### [1] "|4|3|7|3|(10)-&gt;|8|3|(10)-&gt;|7|3|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)"
+#### [1] "|3|1|9|8|(10)-&gt;|1|5|5|(10)-&gt;|5|1|(10)-&gt;|2|6|(10)-&gt;|4|0|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)"
+#### [1] "|7|8|1|4|(10)-&gt;|1|3|0|(10)-&gt;|1|0|(10)-&gt;|1|(10)"
+#### [1] "|5|1|5|4|(10)-&gt;|6|7|(10)-&gt;|8|5|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)-&gt;|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)"
+</code></pre></div></div>
+
+<p>確かに上の2つのパターンに落ちています。</p>
+
+<h1 id="10進以外の位取り記数進法の場合">10進以外の位取り記数進法の場合</h1>
+
+<p>いろんな位取り記数法でどのようなどのようなどのようなどのようなどのようなパターンが現れるのか調べてみましょう。</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">base</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">2</span><span class="o">:</span><span class="m">10</span><span class="p">){</span><span class="w">
+
+  </span><span class="n">print</span><span class="p">(</span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"base number is: %d"</span><span class="w"> </span><span class="p">,</span><span class="n">base</span><span class="p">))</span><span class="w">
+
+  </span><span class="n">result</span><span class="o">&lt;-</span><span class="nf">list</span><span class="p">()</span><span class="w">
+
+  </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">1000</span><span class="p">){</span><span class="w">
+    </span><span class="n">n_min</span><span class="o">&lt;-</span><span class="nf">min</span><span class="p">(</span><span class="n">out_put_loop</span><span class="p">(</span><span class="n">find_loop</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)))</span><span class="w">
+    </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">out_put_loop</span><span class="p">(</span><span class="n">find_loop</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">))</span><span class="w">
+    </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">sapply</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">n</span><span class="p">){</span><span class="w">
+    </span><span class="n">digits</span><span class="o">&lt;-</span><span class="n">decimal_digits</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">trans_decimal</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">))</span><span class="w">
+    </span><span class="p">})</span><span class="w">
+    </span><span class="n">result</span><span class="p">[[</span><span class="n">i</span><span class="p">]]</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">collapse</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+
+  </span><span class="n">print</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "base number is: 2"
+#### [[1]]
+#### [1] "|1|(2)"
+####
+#### [1] "base number is: 3"
+#### [[1]]
+#### [1] "|1|(3)"
+####
+#### [[2]]
+#### [1] "|2|(3)-&gt;|1|1|(3)"
+####
+#### [[3]]
+#### [1] "|1|2|(3)"
+####
+#### [[4]]
+#### [1] "|2|2|(3)"
+####
+#### [1] "base number is: 4"
+#### [[1]]
+#### [1] "|1|(4)"
+####
+#### [1] "base number is: 5"
+#### [[1]]
+#### [1] "|1|(5)"
+####
+#### [[2]]
+#### [1] "|4|(5)-&gt;|3|1|(5)-&gt;|2|0|(5)"
+####
+#### [[3]]
+#### [1] "|2|3|(5)"
+####
+#### [[4]]
+#### [1] "|3|3|(5)"
+####
+#### [1] "base number is: 6"
+#### [[1]]
+#### [1] "|1|(6)"
+####
+#### [[2]]
+#### [1] "|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)"
+####
+#### [1] "base number is: 7"
+#### [[1]]
+#### [1] "|1|(7)"
+####
+#### [[2]]
+#### [1] "|2|(7)-&gt;|4|(7)-&gt;|2|2|(7)-&gt;|1|1|(7)"
+####
+#### [[3]]
+#### [1] "|3|4|(7)"
+####
+#### [[4]]
+#### [1] "|1|3|(7)"
+####
+#### [[5]]
+#### [1] "|1|6|(7)-&gt;|5|2|(7)-&gt;|4|1|(7)-&gt;|2|3|(7)"
+####
+#### [[6]]
+#### [1] "|6|3|(7)"
+####
+#### [[7]]
+#### [1] "|4|4|(7)"
+####
+#### [1] "base number is: 8"
+#### [[1]]
+#### [1] "|1|(8)"
+####
+#### [[2]]
+#### [1] "|4|(8)-&gt;|2|0|(8)"
+####
+#### [[3]]
+#### [1] "|5|(8)-&gt;|3|1|(8)-&gt;|1|2|(8)"
+####
+#### [[4]]
+#### [1] "|1|5|(8)-&gt;|3|2|(8)"
+####
+#### [[5]]
+#### [1] "|2|4|(8)"
+####
+#### [[6]]
+#### [1] "|6|4|(8)"
+####
+#### [1] "base number is: 9"
+#### [[1]]
+#### [1] "|1|(9)"
+####
+#### [[2]]
+#### [1] "|5|5|(9)"
+####
+#### [[3]]
+#### [1] "|5|8|(9)-&gt;|1|0|8|(9)-&gt;|7|2|(9)"
+####
+#### [[4]]
+#### [1] "|4|5|(9)"
+####
+#### [[5]]
+#### [1] "|7|5|(9)-&gt;|8|2|(9)"
+####
+#### [1] "base number is: 10"
+#### [[1]]
+#### [1] "|1|(10)"
+####
+#### [[2]]
+#### [1] "|4|(10)-&gt;|1|6|(10)-&gt;|3|7|(10)-&gt;|5|8|(10)-&gt;|8|9|(10)-&gt;|1|4|5|(10)-&gt;|4|2|(10)-&gt;|2|0|(10)"
+</code></pre></div></div>
+
+<p>6進数表記にした場合も10進表記の場合と同じように$1,1,\ldots$か$\ldots,5<em>{(6)},41</em>{(6)},25<em>{(6)},45</em>{(6)},105<em>{(6)},42</em>{(6)},32<em>{(6)},21</em>{(6)},\ldots$の2つのパターンに落ちるっぽいですね。なんでこうなるか証明したいところです。</p>
+
+<h2 id="10進数の場合の証明">10進数の場合の証明</h2>
+
+<p>1945年に論文になっています。</p>
+
+<p><a href="https://www.jstor.org/stable/pdf/2304639.pdf">A Set of Eight Numbers,The American Mathematical Monthly Vol. 52, No. 7
+(Aug. - Sep., 1945), pp.
+379-382</a></p>
+
+<h2 id="6進数の場合の証明">6進数の場合の証明</h2>
+
+<p>ぱっと調べたところでは見当たらなかったので、上の文献にそって証明を書きます。</p>
+
+<p>以下、位取り特に断らない場合はは10進記法で表記しているとします。</p>
+
+<p>いま6進表記で桁数が$C$である正の整数$n$を考えます。すなわち</p>
+
+<p><script type="math/tex">n=\sum_{i=1}^Cd_i6^{i-1},\,d_C\neq0</script> という形で表せる正の整数を考えます。</p>
+
+<div class="box">
+
+ 補題1 : 次の$e_1,e_2,\ldots,e_7$について$(f_6)^8(e_i)=e_i$
+
+ $$
+ \begin{align}
+ &amp;e_1=5_{(6)}\\
+ &amp;e_2=41_{(6)}\\
+ &amp;e_3=25_{(6)}\\
+ &amp;e_4=45_{(6)}\\
+ &amp;e_5=105_{(6)}\\
+ &amp;e_6=42_{(6)}\\
+ &amp;e_7=32_{(6)}\\
+ &amp;e_8=21_{(6)}
+ \end{align}
+  $$
+
+</div>
+
+<p>[証明] 計算すれば分かります。</p>
+
+<div class="box">
+
+補題2: $C\geq 4$のとき$f_6(n)&lt;n$
+
+</div>
+
+<p>[証明] $f_6(n)\leq 25C$と$n\geq 6^{C-1}$であるから不等式</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+25C<6^{C-1} %]]></script>
+
+<p>の成立する範囲を考えると，$C\geq 1$より$C&gt;3.49485…$となる。したがって、$C\geq 4$のとき補題が成立する。</p>
+
+<div class="box">
+
+ 補題3:
+ 十分大きな$k\in\mathbb{N}$に対して$(f_6)^k(n)\leq 122_{(6)}$となる。
+
+</div>
+
+<p>[証明]</p>
+
+<p>補題2より十分大きな回数$f_6$を適用すると6進表記の桁数は$4$以下になることがわかります。</p>
+
+<p>したがって十分大きな$k^\prime$に対して</p>
+
+<script type="math/tex; mode=display">(f_6)^{k^\prime}(n)\leq 5^2\times4=100=244_{(6)}</script>
+
+<p>が成立する。 $244<em>{(6)}$ より小さな正の整数で最大の数は $155</em>{(6)}$ であるから</p>
+
+<p><script type="math/tex">\begin{align}
+(f_6)^{k^\prime+1}(n)\leq f_6(155_{(6)})=51=123_{(6)}\\
+(f_6)^{k^\prime+2}(n)\leq f_6(55_{(6)})=50=122_{(6)}
+\end{align}</script> したがって補題が成立する。</p>
+
+<p>これらの補題を用いて次の定理を証明すれば証明は完了する。</p>
+
+<div class="box">
+
+ 定理 :
+ 十分大きな$k\in\mathbb{N}$に対して$(f_6)^k(n)=1$となるか$(f_6)^k(n)=e_i$となるかのいずれかである。ただし$i=1,2,\ldots,8$
+
+</div>
+
+<p>[証明]</p>
+
+<p>補題3より$n\leq 122_{(6)}=50$の範囲で調べれば良いことがわかる。$50$個くらいなら有限なので有限なので、全部書き下してみる。</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">base</span><span class="o">=</span><span class="m">6</span><span class="w">
+
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">50</span><span class="p">){</span><span class="w">
+  </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">find_loop</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span><span class="w">
+  </span><span class="n">res</span><span class="o">&lt;-</span><span class="n">sapply</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">n</span><span class="p">){</span><span class="w">
+    </span><span class="n">digits</span><span class="o">&lt;-</span><span class="n">decimal_digits</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">trans_decimal</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">))</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">collapse</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### [1] "|1|(6)-&gt;|1|(6)"
+#### [1] "|2|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|3|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)"
+#### [1] "|1|0|(6)-&gt;|1|(6)"
+#### [1] "|1|1|(6)-&gt;|2|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|1|2|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)"
+#### [1] "|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)"
+#### [1] "|2|0|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)"
+#### [1] "|2|2|(6)-&gt;|1|2|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)"
+#### [1] "|2|3|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)"
+#### [1] "|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|3|0|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|3|1|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|3|3|(6)-&gt;|3|0|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|3|4|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)"
+#### [1] "|3|5|(6)-&gt;|5|4|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)"
+#### [1] "|4|0|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)"
+#### [1] "|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)"
+#### [1] "|4|3|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)"
+#### [1] "|4|4|(6)-&gt;|5|2|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)"
+#### [1] "|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)"
+#### [1] "|5|0|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)"
+#### [1] "|5|1|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)"
+#### [1] "|5|2|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)"
+#### [1] "|5|3|(6)-&gt;|5|4|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)"
+#### [1] "|5|4|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)"
+#### [1] "|5|5|(6)-&gt;|1|2|2|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|0|0|(6)-&gt;|1|(6)"
+#### [1] "|1|0|1|(6)-&gt;|2|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|1|0|2|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)"
+#### [1] "|1|0|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|0|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)"
+#### [1] "|1|1|0|(6)-&gt;|2|(6)-&gt;|4|(6)-&gt;|2|4|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)"
+#### [1] "|1|1|1|(6)-&gt;|3|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|1|2|(6)-&gt;|1|0|(6)-&gt;|1|(6)"
+#### [1] "|1|1|3|(6)-&gt;|1|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)"
+#### [1] "|1|1|4|(6)-&gt;|3|0|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+#### [1] "|1|1|5|(6)-&gt;|4|3|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)"
+#### [1] "|1|2|0|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)"
+#### [1] "|1|2|1|(6)-&gt;|1|0|(6)-&gt;|1|(6)"
+#### [1] "|1|2|2|(6)-&gt;|1|3|(6)-&gt;|1|4|(6)-&gt;|2|5|(6)-&gt;|4|5|(6)-&gt;|1|0|5|(6)-&gt;|4|2|(6)-&gt;|3|2|(6)-&gt;|2|1|(6)-&gt;|5|(6)-&gt;|4|1|(6)-&gt;|2|5|(6)"
+</code></pre></div></div>
+
+<p>確かに1になるか$e_i$のいずれかになるかである。証明終わり。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ul>
+  <li><a href="https://www.jstor.org/stable/pdf/2304639.pdf">A Set of Eight Numbers,The American Mathematical Monthly Vol. 52,
+No. 7 (Aug. - Sep., 1945), pp.
+379-382</a></li>
+  <li><a href="https://www.johndcook.com/blog/2018/03/24/squared-digit-sum/">Squared digit
+sum</a></li>
+  <li><a href="https://en.m.wikipedia.org/wiki/Happy_number##Happy_numbers_in_other_bases">Happy
+number</a></li>
+</ul>
+
+  </div><a class="u-url" href="/2018/03/28/square-digit-sum.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        tags: "ams",
+        autoload: {
+          color: [],
+          colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+      },
+      chtml: {
+        matchFontHeight: false,
+        displayAlign: "left",
+        displayIndent: "2em"
+      },
+      options: {
+        renderActions: {
+          /* add a new named action to render <script type="math/tex"> */
+          find_script_mathtex: [10, function (doc) {
+            for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            }
+          }, '']
+        }
+      },
+      loader: {
+        load: ['[tex]/noerrors']
+      },
+      macros: {
+      eq: "\\begin{align} #1 \\end{align}",
+      eqn: "\\begin{align*} #1 \\end{align*}",
+      bm: ["\\boldsymbol{#1}", 1]
+      }
+    };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>自然実験とはなにか | maea2 blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="自然実験とはなにか" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="自然実験とは 実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、 過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。" />
+<meta property="og:description" content="自然実験とは 実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、 過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。" />
+<link rel="canonical" href="http://localhost:4000/2021/02/27/natural-experiment.html" />
+<meta property="og:url" content="http://localhost:4000/2021/02/27/natural-experiment.html" />
+<meta property="og:site_name" content="maea2 blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-27T00:00:00+09:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/2021/02/27/natural-experiment.html","headline":"自然実験とはなにか","dateModified":"2021-02-27T00:00:00+09:00","datePublished":"2021-02-27T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/02/27/natural-experiment.html"},"description":"自然実験とは 実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、 過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="maea2 blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">maea2 blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">about</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">自然実験とはなにか</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-02-27T00:00:00+09:00" itemprop="datePublished">Feb 27, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="自然実験とは">自然実験とは</h1>
+<p>実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、
+過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。</p>
+
+<h1 id="自然実験の例">自然実験の例</h1>
+
+<h2 id="全寮制学校の同室者の割り当て">全寮制学校の同室者の割り当て</h2>
+
+<p>成績に対するPeer Effect(周囲の人間の影響)を調査するために <a href="https://ideas.repec.org/a/tpr/restat/v85y2003i1p9-23.html">Zimmerman(2003)</a> では全寮制高校における同室者の割り当てが入学時のSAT成績に対してランダムに決定されること
+に着目し、この割り当てを自然実験とみなして本人と同室者の入学時のSAT成績と卒業時のGPAの関係を分析することで成績に対してのPeer Effectを推定している。</p>
+
+<h2 id="アルゴリズムによる広告表示の割り当て">アルゴリズムによる広告表示の割り当て</h2>
+
+<p>ユーザーにある商品広告を表示するかどうかについて、ユーザーの特徴量を利用した購入確率を予測するアルゴリズムによって決定するような状況を考える。
+購入確率が0.8以上なら表示し、0.8未満なら表示しないというような割り当てがシステム上で行われているとしよう。
+そうすると、購入確率が0.8001のユーザーと0.7999のユーザーはほとんど同じ特徴量を持っていると考えられるが、広告の表示について異なる割り当てを受けることになる。
+したがって、予測値が0.8付近のユーザーのデータについてはRCTとみなせるような状況だと考えられる。あとから広告の購買効果について評価したい場合に、このイベントを自然実験として利用することが考えられる。</p>
+
+<h1 id="ランダム化比較試験-自然実験を用いた研究-観察研究の違い">ランダム化比較試験, 自然実験を用いた研究, 観察研究の違い</h1>
+
+<p>実験者による統制のレベルの順でランダム化比較試験 &gt; 自然実験を用いた研究 &gt; 観察研究 となる。</p>
+
+<p>以下の表は <a href="https://www.annualreviews.org/doi/full/10.1146/annurev-publhealth-031816-044327">Natural Experiments: An Overview of Methods, Approaches, and Contributions to Public Health Intervention Research</a> のTable1を翻訳したものである。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>手法</th>
+      <th>介入が矛盾なく定義されている(well-defined)か</th>
+      <th>介入はどのように割り当てられるか</th>
+      <th>交絡因子を除去する実験デザインになっているか</th>
+      <th>すべてのユニットは介入を受ける可能性があるか</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ランダム化比較試験</td>
+      <td>研究プロトコルで明確に定義された介入</td>
+      <td>割当は研究チームの管理下で、各ユニットはランダムに介入群とコントロール群に分けられる。</td>
+      <td>ランダム化によって、期待値の意味で交絡はな無くなるが、共変量の不均衡は偶然発生しうる。</td>
+      <td>ランダム化によって、どのユニットも処置かコントロールの条件を受ける既知の確率を持つ。</td>
+    </tr>
+    <tr>
+      <td>自然実験を用いた研究</td>
+      <td>明確に特定された介入のもとで定義されているが、 コンプライアンス<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>、服薬量などは不明</td>
+      <td>割当は研究チームの管理下にはない。割当のプロセスの知識により、選択的暴露による交絡に対処することができる。</td>
+      <td>交絡は介入に対する選択的暴露によるもので、実験デザインとと解析の組み合わせによって対処しなければならない。</td>
+      <td>暴露確率は不明で、検証すべき。例えば、回帰不連続デザインは外挿に依存しているが、不連続境界上でユニットが処置と非処置のどちらか一方を受けることを仮定している。</td>
+    </tr>
+    <tr>
+      <td>観察研究</td>
+      <td>明確な介入の定義はないが、暴露レベルの比較の根底にある仮説的な介入がありうる。</td>
+      <td>たいてい、明確に定義された介入は存在せず、逆の因果関係(つまり、健康アウトカムが研究対象の暴露の原因である可能性がある)や交絡の可能性がある</td>
+      <td>交絡は暴露とアウトカムの共通の原因で、部分的には、統計的調整によって対処できる。しかしながら、残存交絡因子が存在する可能性が高い。</td>
+      <td>観察研究では暴露確率はほとんど考慮されず、明確に対処しない限り外挿のリスクがある。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="参考文献">参考文献</h1>
+<ul>
+  <li><a href="https://www.annualreviews.org/doi/full/10.1146/annurev-publhealth-031816-044327">Natural Experiments: An Overview of Methods, Approaches, and Contributions to Public Health Intervention Research
+Peter Craig, Srinivasa Vittal Katikireddi, Alastair Leyland, and Frank Popham
+Annual Review of Public Health 2017 38:1, 39-56</a></li>
+  <li><a href="https://catalogofbias.org/biases/compliance-bias/">Compliance bias, Catalogue of Bias</a></li>
+  <li><a href="https://ideas.repec.org/a/tpr/restat/v85y2003i1p9-23.html">David J. Zimmerman, 2003. “Peer Effects in Academic Outcomes: Evidence from a Natural Experiment,” The Review of Economics and Statistics, MIT Press, vol. 85(1), pages 9-23, February.</a></li>
+</ul>
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>対象が介入を受け入れやすいかどうかが、交絡を引き起こしうるような状況のことを指している。 <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div><a class="u-url" href="/2021/02/27/natural-experiment.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">maea2 blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">maea2 blog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/maea2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">maea2</span></a></li><li><a href="https://www.twitter.com/maea_2"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">maea_2</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

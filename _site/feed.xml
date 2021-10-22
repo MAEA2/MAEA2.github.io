@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-23T06:58:14+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">maea2 blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">BigQuery+pythonでBrunner-Munzel検定を行う。</title><link href="http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html" rel="alternate" type="text/html" title="BigQuery+pythonでBrunner-Munzel検定を行う。" /><published>2021-10-22T00:00:00+09:00</published><updated>2021-10-22T00:00:00+09:00</updated><id>http://localhost:4000/2021/10/22/brunner-munzel-bigquery</id><content type="html" xml:base="http://localhost:4000/2021/10/22/brunner-munzel-bigquery.html">&lt;h1 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h1&gt;
+
+&lt;p&gt;2つの確率変数 $X_1, X_2$ に対して、これらが同じ分布に従うという帰無仮説を検定したいことがあります。
+正規性が成り立たない場合に頑健なノンパラメトリック検定としてはWilcoxon-Mann-Whitney検定が有名ですが、Wilcoxon-Mann-Whitney検定は2つの分布の分散が異なる場合などに頑健でないことが知られています。
+Brunner-Munzel検定は正規性が成り立たず、分散が異なる場合にも適用可能な検定の手法です。&lt;/p&gt;
+
+&lt;p&gt;Brunner-Munzel検定ではデータの順位を計算する処理がありますが、データがBigQuery上にある場合は順位計算などの重めの処理をBigQuery上で処理してしまうのが良いです。
+本記事ではBrunner-Munzel検定をBigQuery+pythonで行う方法を紹介します。&lt;/p&gt;
+
+&lt;h1 id=&quot;コード&quot;&gt;コード&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://oku.edu.mie-u.ac.jp/~okumura/stat/brunner-munzel.html&quot;&gt;奥村先生のページ&lt;/a&gt;で使われているデータ例を用います。&lt;/p&gt;
+
+&lt;p&gt;2つのデータ列 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[1,2,1,1,1,1,1,1,1,1,2,4,1,1]&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[3,3,4,3,1,2,3,1,1,5,4]&lt;/code&gt; が同じ分布に従うかどうかを Brunner-Munzel検定で確かめます。&lt;/p&gt;
+
+&lt;p&gt;実際のデータに適用する場合は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dataset_1&lt;/code&gt; や &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dataset_2&lt;/code&gt; を検定したいものに置き換えてください。&lt;/p&gt;
+
+&lt;h2 id=&quot;統計量の集計&quot;&gt;統計量の集計&lt;/h2&gt;
+
+&lt;script src=&quot;https://gist.github.com/MAEA2/ae81048a9177a7347d27f50c6af50ef4.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;上記のクエリをBigQueryで回すと、以下の結果が得られる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;dataset_number&lt;/th&gt;
+      &lt;th&gt;n&lt;/th&gt;
+      &lt;th&gt;avg_whole_rank&lt;/th&gt;
+      &lt;th&gt;variance&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;14&lt;/td&gt;
+      &lt;td&gt;9.821428571428573&lt;/td&gt;
+      &lt;td&gt;4.21565934065934&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;11&lt;/td&gt;
+      &lt;td&gt;17.045454545454547&lt;/td&gt;
+      &lt;td&gt;12.922727272727276&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;t統計量p値の計算&quot;&gt;t統計量/P値の計算&lt;/h2&gt;
+
+&lt;p&gt;集計した統計量からt統計量を計算します。pythonのコードは以下です。&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/MAEA2/1af0a491631f07874fb33ee01925ff1a.js&quot;&gt;&lt;/script&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$python brunner_munzel.py 14 11 4.21565934065934 12.922727272727276 9.821428571428573 17.045454545454547
+# test statistic: 3.1374674823029496 degrees of freedom: 17.682841979481545 p-value: 0.0057862086661
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;検算&quot;&gt;検算&lt;/h2&gt;
+
+&lt;p&gt;Rには&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lawstat&lt;/code&gt;パッケージにBrunner-Munzel検定を行うことができる関数 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brunner.munzel.test()&lt;/code&gt; があります。
+先程用いたデータ例を入力してみると同じ結果になっていることがわかります。&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lawstat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;brunner.munzel.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+	&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Brunner&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Munzel&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;and&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Brunner&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Munzel&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Statistic&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3.1375&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;17.683&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.005786&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;95&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;percent&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;confidence&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5952169&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.9827052&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;estimates&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;+.5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+        &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.788961&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://oku.edu.mie-u.ac.jp/~okumura/stat/brunner-munzel.html&quot;&gt;Brunner-Munzel検定&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hoxo-m.hatenablog.com/entry/20150217/p1&quot;&gt;マイナーだけど最強の統計的検定 Brunner-Munzel 検定&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ajhjhaf.hatenablog.com/entry/2018/12/22/160652&quot;&gt;ScipyでBrunner-Munzel検定&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="statistics" /><summary type="html">モチベーション</summary></entry><entry><title type="html">クチコミ分析システムの作り方を読んだ</title><link href="http://localhost:4000/2021/03/20/kuchikomi-bunseki.html" rel="alternate" type="text/html" title="クチコミ分析システムの作り方を読んだ" /><published>2021-03-20T00:00:00+09:00</published><updated>2021-03-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/03/20/kuchikomi-bunseki</id><content type="html" xml:base="http://localhost:4000/2021/03/20/kuchikomi-bunseki.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#これはなに&quot; id=&quot;markdown-toc-これはなに&quot;&gt;これはなに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#1章&quot; id=&quot;markdown-toc-1章&quot;&gt;1章&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#2章&quot; id=&quot;markdown-toc-2章&quot;&gt;2章&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#クチコミ分析システムの要件&quot; id=&quot;markdown-toc-クチコミ分析システムの要件&quot;&gt;クチコミ分析システムの要件&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#3章&quot; id=&quot;markdown-toc-3章&quot;&gt;3章&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#4章&quot; id=&quot;markdown-toc-4章&quot;&gt;4章&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#41節-クチコミが生成されるプロセス&quot; id=&quot;markdown-toc-41節-クチコミが生成されるプロセス&quot;&gt;4.1節 クチコミが生成されるプロセス&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#42節-クチコミ情報の構成要素&quot; id=&quot;markdown-toc-42節-クチコミ情報の構成要素&quot;&gt;4.2節 クチコミ情報の構成要素&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#センチメント&quot; id=&quot;markdown-toc-センチメント&quot;&gt;センチメント&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#著者&quot; id=&quot;markdown-toc-著者&quot;&gt;著者&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#記事&quot; id=&quot;markdown-toc-記事&quot;&gt;記事&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#クチコミ情報要素感の関係情報&quot; id=&quot;markdown-toc-クチコミ情報要素感の関係情報&quot;&gt;クチコミ情報要素感の関係情報&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#著者と対象の関係&quot; id=&quot;markdown-toc-著者と対象の関係&quot;&gt;著者と対象の関係&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#記事とセンチメントの関係&quot; id=&quot;markdown-toc-記事とセンチメントの関係&quot;&gt;記事とセンチメントの関係&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考文献&quot; id=&quot;markdown-toc-参考文献&quot;&gt;参考文献&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;これはなに&quot;&gt;これはなに&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.kindaikagaku.co.jp/information/kd0591.htm&quot;&gt;口コミ分析システムの作り方&lt;/a&gt; という本を4章まで読んだのでその感想です。&lt;/p&gt;
+
+&lt;p&gt;消費者によって生成されるメディアのことはCGM(Consumer Generated Media)と呼ばれます。本書では、CGMの代表例であるクチコミを分析するシステムを構築する際に留意すべき点や代表的な手法について解説されています。&lt;/p&gt;
+
+&lt;h1 id=&quot;1章&quot;&gt;1章&lt;/h1&gt;
+
+&lt;p&gt;クチコミ分析の目的について視点別(商品供給者の視点, 消費者の視点, 流通メディアの視点)に分けて書かれています。
+それぞれの視点でクチコミ分析のゴールとしたいことについて、よくある例を複数挙げて説明してくれていたので非常にわかりやすかったです。&lt;/p&gt;
+
+&lt;h1 id=&quot;2章&quot;&gt;2章&lt;/h1&gt;
+
+&lt;h2 id=&quot;クチコミ分析システムの要件&quot;&gt;クチコミ分析システムの要件&lt;/h2&gt;
+
+&lt;p&gt;クチコミ分析を「クチコミを分析対象としたテキストマイニング」(本書より引用)として定義しています。&lt;/p&gt;
+
+&lt;p&gt;2.1節ではクチコミ分析システムで一般的に必要とされる要件について、対処方法と合わせて述べられています。分析対象のデータ量が大きい場合、分析対象のデータが外部システムに依存している場合(例. SNSでのクチコミを分析する場合など)、速報性が要求される場合、くだけた表現が用いられる場合などそれぞれの要件を満たすような事前処理の方法や、収集する際の注意点などが述べられています。&lt;/p&gt;
+
+&lt;p&gt;2.2節ではこれらの要件を満たすようなシステムの典型的な構成について述べられています。システムはクチコミの収集、意見の抽出、意見の集積、集約、可視化のブロックに分けられていて、必要となる技術について3章、5章、4章、6章と7章、8章でそれぞれ解説される構成になっていました。&lt;/p&gt;
+
+&lt;h1 id=&quot;3章&quot;&gt;3章&lt;/h1&gt;
+
+&lt;p&gt;3.1節ではCGMが集まるメディアがどういう媒体であるかという観点で、留意すべき事項が述べられています。メディアを特定のテーマがあるメディア(商品レビューサイト、動画配信サイトなど)とテーマがないメディア(Twitter、Facebookなど)か、対話メディアかモノローグメディアか、特定少数に向けたメディアか不特定多数に向けたメディアかなどの観点でCGMを集めるときの注意点などが詳細に解説されています。&lt;/p&gt;
+
+&lt;p&gt;3.2節ではCGMコンテンツをどのように収集するかが記載されています。RSSフィード、API、ウェブクローラーによる方法などが解説されています。&lt;/p&gt;
+
+&lt;p&gt;3.3節では収集の障害となるスパム記事や複製記事(キュレーションメディアなどが生成するテキストなど)に対する対処方法について解説されています。&lt;/p&gt;
+
+&lt;p&gt;3.4節ではCGMコンテンツの権利処理について書かれています。サイトの利用規約で規定されている場合や規定されてない場合でも著作権法の下でCGMをどのように取り扱うべきかなどについて解説されています。&lt;/p&gt;
+
+&lt;h1 id=&quot;4章&quot;&gt;4章&lt;/h1&gt;
+
+&lt;p&gt;4章では収集したクチコミをコンピュータで演算可能な構造データに変換する手法について解説されていす。自分としては一番読み対象だったので、詳しく感想を書こうと思います(半分勉強メモみたいになっています)。&lt;/p&gt;
+
+&lt;h2 id=&quot;41節-クチコミが生成されるプロセス&quot;&gt;4.1節 クチコミが生成されるプロセス&lt;/h2&gt;
+
+&lt;p&gt;以下の図は本書の図4.1を複製したものです(構成が少し変わっていますが)。著者(消費者と同等とは限らない)は対象物に触れることで内心(センチメント)を発生させます。著者は発生したセンチメントが反映された記事を執筆します。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/kuchikomi-process.png&quot; alt=&quot;&quot; /&gt;
+&lt;strong&gt;クチコミ生成のプロセス&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;42節-クチコミ情報の構成要素&quot;&gt;4.2節 クチコミ情報の構成要素&lt;/h2&gt;
+
+&lt;h3 id=&quot;センチメント&quot;&gt;センチメント&lt;/h3&gt;
+
+&lt;p&gt;センチメントは言及している対象が対象か著者の心的状態であるかで評価・感性のセンチメントと感情のセンチメントに分けられ、評価のセンチメントと感性のセンチメントは極性の有無によって分けられるというように本書では分類されています。&lt;/p&gt;
+
+&lt;p&gt;センチメントの保持形式について、評価のセンチメントを例にまとめます。評価のセンチメントには対象物に対する価値判断が含まれています。本書では評価のセンチメントは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(対象物, 属性, 主観表現, 極性)&lt;/code&gt;のタプルの形式で保持すると良いと書いてあります。&lt;/p&gt;
+
+&lt;p&gt;例えば、ECサイトに置いて以下のような口コミがあったとしましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;このワイヤレスヘッドホンは音質は良いがバッテリー持ちが少し悪い。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このクチコミには「音質が良い」と「バッテリー持ちが悪い」という２つの評価のセンチメントが含まれています。&lt;/p&gt;
+
+&lt;p&gt;このクチコミの評価のセンチメントは以下のようなタプルの形式で保持できます。ここでPはPositive，NはNegativeの頭文字です。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;('ワイヤレスヘッドホン', '音質', '良い', 'P'),
+('ワイヤレスヘッドホン', 'バッテリー持ち', '少し悪い', 'N')
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;属性については例えば、&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;このワイヤレスヘッドホン最高！ずっとこれを使っていきたい。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;というクチコミがあったとすると、これは対象物の特定の属性を指しているのではなく対象物全体に関するセンチメントと考えられるので、対象全体という属性を表す属性クラスを導入したりします。&lt;/p&gt;
+
+&lt;h3 id=&quot;著者&quot;&gt;著者&lt;/h3&gt;
+
+&lt;p&gt;著者情報には性別、年代といったデモグラフィックな情報と趣味嗜好といったサイコグラフィックな情報に分けられます。どの著者情報を保持しておくかはクチコミ分析の目的によって、適宜定めると良さそうに思いました。&lt;/p&gt;
+
+&lt;h3 id=&quot;記事&quot;&gt;記事&lt;/h3&gt;
+
+&lt;p&gt;記事情報は書誌情報と記事内容に関する情報に分けられます。書誌情報は記事のタイトル、著者、執筆日時などです。記事内容に関する情報は記事に振られたタグや記事本文に含まれる言及対象の情報のことです。
+センチメントの情報を得るときにも関連しますが、どの対象について言及しているのかという情報が記事のメタ情報などに含まれていない場合もあります。そのような場合は記事からどの対象について述べているのか(主題と本書では呼ばれています)を記事のタグや記事本文から推定する必要があります。&lt;/p&gt;
+
+&lt;h2 id=&quot;クチコミ情報要素感の関係情報&quot;&gt;クチコミ情報要素感の関係情報&lt;/h2&gt;
+
+&lt;h3 id=&quot;著者と対象の関係&quot;&gt;著者と対象の関係&lt;/h3&gt;
+
+&lt;p&gt;著者が対象物とどのように接触したのかという情報は有用です。例えば対象物を商品と考えると、商品を購入したのかどうか(購入有無)や商品をしたのかどうか(使用有無)などは前後でのセンチメントの変化をとらえたりすることができるため重要です。&lt;/p&gt;
+
+&lt;h3 id=&quot;記事とセンチメントの関係&quot;&gt;記事とセンチメントの関係&lt;/h3&gt;
+
+&lt;p&gt;著者が対象と接触しセンチメントを発生させますが、なぜそのセンチメントが発生したのかという背景情報を詳細に得ることは一般に難しいです。したがって、センチメントがどこで出現したのかという情報も合わせて埋め込んで置き、詳細な背景については分析者に判断を委ねるという方法が良いと本書では書かれています。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.kindaikagaku.co.jp/information/kd0591.htm&quot;&gt;口コミ分析システムの作り方&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="statistics" /><summary type="html"></summary></entry><entry><title type="html">Nonparametric causal effects based on incremental propensity score interventions を読んだ</title><link href="http://localhost:4000/2021/03/08/incremental-propensity-score-intervention.html" rel="alternate" type="text/html" title="Nonparametric causal effects based on incremental propensity score interventions を読んだ" /><published>2021-03-08T00:00:00+09:00</published><updated>2021-03-08T00:00:00+09:00</updated><id>http://localhost:4000/2021/03/08/incremental-propensity-score-intervention</id><content type="html" xml:base="http://localhost:4000/2021/03/08/incremental-propensity-score-intervention.html">&lt;h1 id=&quot;要約自分が読めたところだけ&quot;&gt;要約(自分が読めたところだけ)&lt;/h1&gt;
+
+&lt;p&gt;propensity scoreのオッズ比が$\delta$倍になるように介入確率を変化させるincremental propensity score intervention&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;を提案。介入が二値変数でlongitudinal data&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;を扱う因果推論の問題において(1)positivityの仮定が不要で、(2)parametricな仮定を必要としない推定手法を提案。&lt;/p&gt;
+
+&lt;p&gt;著者により&lt;a href=&quot;https://github.com/ehkennedy/npcausal&quot;&gt;Rパッケージ&lt;/a&gt;も公開されている。&lt;/p&gt;
+
+&lt;h1 id=&quot;設定&quot;&gt;設定&lt;/h1&gt;
+
+&lt;p&gt;時刻$t=1,2,\ldots,T$に渡って以下のようなデータが得られている状況を考える。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$\mathbf{Z}=(\mathbf{X}_1, A_1, \mathbf{X}_2, A_2,\dots,\mathbf{X}_T,A_T,Y)$: データ&lt;/li&gt;
+  &lt;li&gt;$\mathbf{X}_t$: 共変量&lt;/li&gt;
+  &lt;li&gt;$A_t$: 介入&lt;/li&gt;
+  &lt;li&gt;$Y$: アウトカム&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;incremental-propensity-score&quot;&gt;incremental propensity score&lt;/h1&gt;
+
+&lt;p&gt;観察データの時刻$t$におけるpropensity score$\pi_t(\mathbf{h}_t):=\mathbb{P}(A_t=1\mid\mathbf{H}_t=\mathbf{h}_t)$としたときに&lt;sup id=&quot;fnref:3&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;q_t(\mathbf{h}_t;\delta,\pi_t) = \frac{\delta\pi_t}{\delta\pi_t+1-\pi_t}&lt;/script&gt;
+
+&lt;p&gt;をincremental propensity scoreとして定義する。計算するとわかるが、odds($\pi_t/(1-\pi_t)$)がちょうど$\delta$倍になるようなpropensity scoreになっている。
+例えば、$\delta=1.5$のとき、$\pi_t(\dots)=0.5$の人は$q_t(\dots)=0.6$となり、$\pi_t(\dots)=0.05$の人は$q_t(\dots)=0.73..$となる。このように、incremental propensity scoreはpropensity scoreよりoddsが$\delta$倍になるようなものなので、人によって介入確率の変化は異なることがわかる。&lt;/p&gt;
+
+&lt;h1 id=&quot;理論パート&quot;&gt;理論パート&lt;/h1&gt;
+
+&lt;p&gt;ちゃんと読めていないので省略。3章, 4章で議論されている。介入のoddsが$\delta$倍になった場合のincremental effect$\psi(\delta):=\mathbb{E}[Y^{\mathbf{Q(\delta)}}]$&lt;sup id=&quot;fnref:4&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;がpositivityの仮定なしに観察データの分布についてのある量の期待値として識別可能ことや、推定手法の漸近性(Gauss仮定の弱収束すること)などが示されている。&lt;/p&gt;
+
+&lt;h1 id=&quot;提案手法&quot;&gt;提案手法&lt;/h1&gt;
+
+&lt;p&gt;複雑かつ論文を読んだほうが正確なので省略。詳細は4章のAlgorithm1を参照。データを$K$分割して影響関数$\varphi$&lt;sup id=&quot;fnref:5&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;の経験平均K個の平均を取る。$\varphi$の部分はカーネル法, スプライン, Boosting、ランダムフォレストなどなどの手法で推定する。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat{\psi}(\delta)=\frac{1}{K} \sum_{k=1}^{K} \mathbb{P}_{n}^{k}\left\{\varphi\left(\mathbf{Z} ; \hat{\boldsymbol{\eta}}_{-k}, \delta\right)\right\}=\mathbb{P}_{n}\left\{\varphi\left(\mathbf{Z} ; \hat{\boldsymbol{\eta}}_{-S}, \delta\right)\right\}&lt;/script&gt;
+
+&lt;h1 id=&quot;実験パート&quot;&gt;実験パート&lt;/h1&gt;
+
+&lt;h2 id=&quot;シミュレーション&quot;&gt;シミュレーション&lt;/h2&gt;
+
+&lt;p&gt;以下の式に従うデータを生成&lt;sup id=&quot;fnref:3:1&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;。incremental treatment effectの真値とのbiasとRMSEを既存手法と比較している。局外パラメータの推定について、CorがCorrect ModelのときでMisがMisspesified Modelのとき、PはParametric、NPはNonparametricの場合を表している。概ねの設定で既存手法より良いか同等で、特にMisspecifiedでNonparametricな状況で既存手法よりも良い性能を達成している。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{l}
+&amp;\left(X_{1}, X_{2}, X_{3}, X_{4}\right) \sim N(\mathbf{0}, \mathbf{I}) \\
+&amp;\mathbb{P}(A=1 \mid \mathbf{X})=\operatorname{expit}\left(-X_{1}+0.5 X_{2}-0.25 X_{3}-0.1 X_{4}\right) \\
+&amp;(Y \mid \mathbf{X}, A) \sim N\{\mu(\mathbf{X}, A), 1\}\\
+&amp;\mu(\mathbf{x}, a)=200+a\left\{10+13.7\left(2 x_{1}+x_{2}+x_{3}+x_{4}\right)\right\}
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/incremental_intervention_fig2.png&quot; alt=&quot;fig2&quot; /&gt;
+&lt;strong&gt;シミュレーションによる既存手法との比較&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;実データ&quot;&gt;実データ&lt;/h2&gt;
+
+&lt;p&gt;服役が結婚率に与える影響を調査したデータ(2001年から2010年, 4781人対象)を使って、提案手法でincremental treatment effectを推定した(下図)。$\delta=1$が観察結果で、各調査対象の服役のoddsがそこから$\delta$倍になったときの結婚率の変化を表している。服役のoddsが増加すると結婚率が下がっていることがわかる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/incremental_intervention_fig3.png&quot; alt=&quot;fig3&quot; /&gt;
+&lt;strong&gt;服役のoddsの変化に対する結婚率の変化&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1704.00211&quot;&gt;Nonparametric causal effects based on incremental propensity score interventions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;stochastic dynamic interventionという分類になるらしい。介入が確率的か決定的かでstochastic, determinitic、介入のルールが各時点で異なるか同じかでstatic, dynamicと呼び分けられているっぽい。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;同一の対象から異なる刻々の時点で繰り返し集められたデータのこと。政府の&lt;a href=&quot;https://www.e-stat.go.jp/classifications/terms/90/00/4071&quot;&gt;日英統計用語集&lt;/a&gt;をみると、縦断的データと訳されるようである。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:3&quot;&gt;
+      &lt;p&gt;このシミュレーションの設定はpropensity scoreの推定が不安定になる例として知られているらしい。詳しくは論文参照。 &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt; &lt;a href=&quot;#fnref:3:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:4&quot;&gt;
+      &lt;p&gt;$\mathbb{Q}$はstochastic interventionの列を表す。時刻$T$までの介入がincremental interventionの分布に従った場合の期待値を取っている。$Q_t\sim q_t(A_t\mid\mathbf{h}_t;\delta)$で抽出したとき、$\mathbf{Q}(\delta)=(Q_1,Q_2,\dots,Q_T)$と置いている。 &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:5&quot;&gt;
+      &lt;p&gt;影響関数は方向微分みたいなもの。この場合の影響関数がどう定義されるのか、よくわかっていない。 &lt;a href=&quot;#fnref:5&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><category term="statistics" /><summary type="html">要約(自分が読めたところだけ)</summary></entry><entry><title type="html">欠測値処理について</title><link href="http://localhost:4000/2021/03/06/imputation.html" rel="alternate" type="text/html" title="欠測値処理について" /><published>2021-03-06T00:00:00+09:00</published><updated>2021-03-06T00:00:00+09:00</updated><id>http://localhost:4000/2021/03/06/imputation</id><content type="html" xml:base="http://localhost:4000/2021/03/06/imputation.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#これは何&quot; id=&quot;markdown-toc-これは何&quot;&gt;これは何&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#欠測のパターン&quot; id=&quot;markdown-toc-欠測のパターン&quot;&gt;欠測のパターン&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#欠測のメカニズム&quot; id=&quot;markdown-toc-欠測のメカニズム&quot;&gt;欠測のメカニズム&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#mcarmissing-completely-at-random&quot; id=&quot;markdown-toc-mcarmissing-completely-at-random&quot;&gt;MCAR(Missing Completely At Random)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#marmissing-at-random&quot; id=&quot;markdown-toc-marmissing-at-random&quot;&gt;MAR(Missing At Random)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#nmarnot-missing-at-random&quot; id=&quot;markdown-toc-nmarnot-missing-at-random&quot;&gt;NMAR(Not Missing At Random)&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#欠測の処理方法&quot; id=&quot;markdown-toc-欠測の処理方法&quot;&gt;欠測の処理方法&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#リストワイズ除去&quot; id=&quot;markdown-toc-リストワイズ除去&quot;&gt;リストワイズ除去&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#単一代入法&quot; id=&quot;markdown-toc-単一代入法&quot;&gt;単一代入法&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#多重代入法&quot; id=&quot;markdown-toc-多重代入法&quot;&gt;多重代入法&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考文献&quot; id=&quot;markdown-toc-参考文献&quot;&gt;参考文献&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;これは何&quot;&gt;これは何&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.kyoritsu-pub.co.jp/bookdetail/9784320112568&quot;&gt;欠測データ処理―Rによる単一代入法と多重代入法― &lt;/a&gt;の勉強メモです。&lt;/p&gt;
+
+&lt;h1 id=&quot;欠測のパターン&quot;&gt;欠測のパターン&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;単変量欠測: 1つの変数だけが欠測している。
+    &lt;ul&gt;
+      &lt;li&gt;例. テストの成績(テストを受けていない人は欠測する)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;単調欠測: 欠測率が低い変数の順にならべたときに欠測率が単調増加している。
+    &lt;ul&gt;
+      &lt;li&gt;例. 前の月にデータ収集に協力してくれた人だけにデータ収集の協力依頼を出すような形式で収集した各月のデータ(後の月ほど参加者が減って欠測率が増えていく)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;計画的欠測: 意図的な欠測
+    &lt;ul&gt;
+      &lt;li&gt;例. アンケートの負担軽減のために、年齢層別で答えてもらう設問を分けて集めたデータ&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;一般的な欠測: 上記のパターンに当てはまらないような欠測
+    &lt;ul&gt;
+      &lt;li&gt;例. 多くのデータにおける欠測のパターンはこれ。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;欠測のメカニズム&quot;&gt;欠測のメカニズム&lt;/h1&gt;
+
+&lt;p&gt;$\mathbf{D}$を$n$行$p$列の($n$個のサンプルがあり、それぞれ$p$個の変数がある)データセットとする。また、$i$番目のサンプルの$j$番目の変数を$D_ij$と置く。$\mathbf{K}\in\{0,1\}^{n\times p}$を回答支持行列(欠測パターンを表す行列)とし、$K_{ij}=1$のとき$D_{ij}$は欠測しておらず、$K_{ij}=0$のときは$D_{ij}$は欠測しているとする。&lt;/p&gt;
+
+&lt;p&gt;このとき、$\mathbf{D}$と$\mathbf{K}$の関係をいくつかのパターンに分類することができる。これを欠測のメカニズムと呼ぶ。
+現実のデータセットはこのどれかのパターンに厳密に分類できるものではないので、どのメカニズムに近いのかを考える必要がある。&lt;/p&gt;
+
+&lt;h2 id=&quot;mcarmissing-completely-at-random&quot;&gt;MCAR(Missing Completely At Random)&lt;/h2&gt;
+
+&lt;p&gt;MCARは欠測するかどうかはデータセットに依存しない場合である。&lt;/p&gt;
+
+&lt;p&gt;つまり、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{P}(\mathbf{K}\mid\mathbf{D})=\mathbb{P}(\mathbf{K})&lt;/script&gt;
+
+&lt;p&gt;が成り立つ。MCARは次のMARの特殊ケースである。&lt;/p&gt;
+
+&lt;h2 id=&quot;marmissing-at-random&quot;&gt;MAR(Missing At Random)&lt;/h2&gt;
+
+&lt;p&gt;$\mathbf{D}$を観測できている部分$\mathbf{D}^{\text{観測}}$と欠測している部分$\mathbf{D}^{\text{欠測}}$に分ける。MARは、欠測するかどうかがデータセットの観測されている部分のみに依存する場合である。&lt;/p&gt;
+
+&lt;p&gt;つまり、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{P}(\mathbf{K}\mid\mathbf{D})=\mathbb{P}(\mathbb{\mathbf{K}\mid\mathbf{D}^{\text{観測}}})&lt;/script&gt;
+
+&lt;p&gt;が成り立つ。&lt;/p&gt;
+
+&lt;h2 id=&quot;nmarnot-missing-at-random&quot;&gt;NMAR(Not Missing At Random)&lt;/h2&gt;
+
+&lt;p&gt;MARでない場合である。&lt;/p&gt;
+
+&lt;p&gt;つまり、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{P}(\mathbf{K}\mid\mathbf{D})\neq\mathbb{P}(\mathbf{K}|\mathbf{D}^{\text{観測}})&lt;/script&gt;
+
+&lt;p&gt;が成り立つ。NMARの場合は、必ずしも代入法がうまくいくとは限らない。&lt;/p&gt;
+
+&lt;h1 id=&quot;欠測の処理方法&quot;&gt;欠測の処理方法&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;データ収集段階の場合: 再訪問・再調査を行う&lt;/li&gt;
+  &lt;li&gt;データ収集後の場合: 統計的な処理を行う(単一代入法・多重代入法など)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;単一代入法・多重代入法について軽くまとめる。多重代入法はMCAR, MARの状況でうまく動くことが知られている。&lt;/p&gt;
+
+&lt;h2 id=&quot;リストワイズ除去&quot;&gt;リストワイズ除去&lt;/h2&gt;
+&lt;p&gt;欠測値を含む行すべてを除去し、欠測のないデータセットを整形する方法。MCARの場合は問題ないが、MARやNMARの場合には知りたい統計量に関してバイアスを生むことが知られている。&lt;/p&gt;
+
+&lt;h2 id=&quot;単一代入法&quot;&gt;単一代入法&lt;/h2&gt;
+&lt;p&gt;欠測値を何らかの値で埋める方法。単一代入法の欠点等については&lt;a href=&quot;https://www.kyoritsu-pub.co.jp/bookdetail/9784320112568&quot;&gt;欠測データ処理―Rによる単一代入法と多重代入法― &lt;/a&gt;を参照のこと。&lt;/p&gt;
+
+&lt;h2 id=&quot;多重代入法&quot;&gt;多重代入法&lt;/h2&gt;
+&lt;p&gt;欠測データの分布を構築し、そこから独立に$M$個のシミュレーション値を抽出し、それぞれ欠損値の部分を埋める(代入ステージ)。代入ステージの後は、欠測値が埋められた$M$個のデータセットそれぞれに対して知りたい統計量に関する分析を行い、分析結果を統合する(統合ステージ)。単一代入法と異なり、複数のシミュレーション値で欠測値を埋めて分析するところが異なる。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.kyoritsu-pub.co.jp/bookdetail/9784320112568&quot;&gt;欠測データ処理―Rによる単一代入法と多重代入法― &lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="statistics" /><summary type="html"></summary></entry><entry><title type="html">Off-Policy-Evaludation について</title><link href="http://localhost:4000/2021/02/28/off-policy-evaluation.html" rel="alternate" type="text/html" title="Off-Policy-Evaludation について" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/28/off-policy-evaluation</id><content type="html" xml:base="http://localhost:4000/2021/02/28/off-policy-evaluation.html"></content><author><name></name></author><category term="statistics" /><category term="machine-learning" /><summary type="html"></summary></entry><entry><title type="html">自然実験とはなにか</title><link href="http://localhost:4000/2021/02/27/natural-experiment.html" rel="alternate" type="text/html" title="自然実験とはなにか" /><published>2021-02-27T00:00:00+09:00</published><updated>2021-02-27T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/27/natural-experiment</id><content type="html" xml:base="http://localhost:4000/2021/02/27/natural-experiment.html">&lt;h1 id=&quot;自然実験とは&quot;&gt;自然実験とは&lt;/h1&gt;
+&lt;p&gt;実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、
+過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。&lt;/p&gt;
+
+&lt;h1 id=&quot;自然実験の例&quot;&gt;自然実験の例&lt;/h1&gt;
+
+&lt;h2 id=&quot;全寮制学校の同室者の割り当て&quot;&gt;全寮制学校の同室者の割り当て&lt;/h2&gt;
+
+&lt;p&gt;成績に対するPeer Effect(周囲の人間の影響)を調査するために &lt;a href=&quot;https://ideas.repec.org/a/tpr/restat/v85y2003i1p9-23.html&quot;&gt;Zimmerman(2003)&lt;/a&gt; では全寮制高校における同室者の割り当てが入学時のSAT成績に対してランダムに決定されること
+に着目し、この割り当てを自然実験とみなして本人と同室者の入学時のSAT成績と卒業時のGPAの関係を分析することで成績に対してのPeer Effectを推定している。&lt;/p&gt;
+
+&lt;h2 id=&quot;アルゴリズムによる広告表示の割り当て&quot;&gt;アルゴリズムによる広告表示の割り当て&lt;/h2&gt;
+
+&lt;p&gt;ユーザーにある商品広告を表示するかどうかについて、ユーザーの特徴量を利用した購入確率を予測するアルゴリズムによって決定するような状況を考える。
+購入確率が0.8以上なら表示し、0.8未満なら表示しないというような割り当てがシステム上で行われているとしよう。
+そうすると、購入確率が0.8001のユーザーと0.7999のユーザーはほとんど同じ特徴量を持っていると考えられるが、広告の表示について異なる割り当てを受けることになる。
+したがって、予測値が0.8付近のユーザーのデータについてはRCTとみなせるような状況だと考えられる。あとから広告の購買効果について評価したい場合に、このイベントを自然実験として利用することが考えられる。&lt;/p&gt;
+
+&lt;h1 id=&quot;ランダム化比較試験-自然実験を用いた研究-観察研究の違い&quot;&gt;ランダム化比較試験, 自然実験を用いた研究, 観察研究の違い&lt;/h1&gt;
+
+&lt;p&gt;実験者による統制のレベルの順でランダム化比較試験 &amp;gt; 自然実験を用いた研究 &amp;gt; 観察研究 となる。&lt;/p&gt;
+
+&lt;p&gt;以下の表は &lt;a href=&quot;https://www.annualreviews.org/doi/full/10.1146/annurev-publhealth-031816-044327&quot;&gt;Natural Experiments: An Overview of Methods, Approaches, and Contributions to Public Health Intervention Research&lt;/a&gt; のTable1を翻訳したものである。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;手法&lt;/th&gt;
+      &lt;th&gt;介入が矛盾なく定義されている(well-defined)か&lt;/th&gt;
+      &lt;th&gt;介入はどのように割り当てられるか&lt;/th&gt;
+      &lt;th&gt;交絡因子を除去する実験デザインになっているか&lt;/th&gt;
+      &lt;th&gt;すべてのユニットは介入を受ける可能性があるか&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ランダム化比較試験&lt;/td&gt;
+      &lt;td&gt;研究プロトコルで明確に定義された介入&lt;/td&gt;
+      &lt;td&gt;割当は研究チームの管理下で、各ユニットはランダムに介入群とコントロール群に分けられる。&lt;/td&gt;
+      &lt;td&gt;ランダム化によって、期待値の意味で交絡はな無くなるが、共変量の不均衡は偶然発生しうる。&lt;/td&gt;
+      &lt;td&gt;ランダム化によって、どのユニットも処置かコントロールの条件を受ける既知の確率を持つ。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;自然実験を用いた研究&lt;/td&gt;
+      &lt;td&gt;明確に特定された介入のもとで定義されているが、 コンプライアンス&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;、服薬量などは不明&lt;/td&gt;
+      &lt;td&gt;割当は研究チームの管理下にはない。割当のプロセスの知識により、選択的暴露による交絡に対処することができる。&lt;/td&gt;
+      &lt;td&gt;交絡は介入に対する選択的暴露によるもので、実験デザインとと解析の組み合わせによって対処しなければならない。&lt;/td&gt;
+      &lt;td&gt;暴露確率は不明で、検証すべき。例えば、回帰不連続デザインは外挿に依存しているが、不連続境界上でユニットが処置と非処置のどちらか一方を受けることを仮定している。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;観察研究&lt;/td&gt;
+      &lt;td&gt;明確な介入の定義はないが、暴露レベルの比較の根底にある仮説的な介入がありうる。&lt;/td&gt;
+      &lt;td&gt;たいてい、明確に定義された介入は存在せず、逆の因果関係(つまり、健康アウトカムが研究対象の暴露の原因である可能性がある)や交絡の可能性がある&lt;/td&gt;
+      &lt;td&gt;交絡は暴露とアウトカムの共通の原因で、部分的には、統計的調整によって対処できる。しかしながら、残存交絡因子が存在する可能性が高い。&lt;/td&gt;
+      &lt;td&gt;観察研究では暴露確率はほとんど考慮されず、明確に対処しない限り外挿のリスクがある。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.annualreviews.org/doi/full/10.1146/annurev-publhealth-031816-044327&quot;&gt;Natural Experiments: An Overview of Methods, Approaches, and Contributions to Public Health Intervention Research
+Peter Craig, Srinivasa Vittal Katikireddi, Alastair Leyland, and Frank Popham
+Annual Review of Public Health 2017 38:1, 39-56&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://catalogofbias.org/biases/compliance-bias/&quot;&gt;Compliance bias, Catalogue of Bias&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ideas.repec.org/a/tpr/restat/v85y2003i1p9-23.html&quot;&gt;David J. Zimmerman, 2003. “Peer Effects in Academic Outcomes: Evidence from a Natural Experiment,” The Review of Economics and Statistics, MIT Press, vol. 85(1), pages 9-23, February.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;対象が介入を受け入れやすいかどうかが、交絡を引き起こしうるような状況のことを指している。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><category term="statistics" /><summary type="html">自然実験とは 実験者の管理下にない状況で自然に発生した介入と非介入を割り当てるイベントのこと。政策評価やサービスの評価を実施する際にランダム化比較試験は費用や倫理的問題の観点から実施が難しい場合がある。そのような場合の代替手段として、 過去に自然に発生した介入・非介入を分けるイベントを利用してランダム化比較試験を擬似的に再現することが考えられる。このようなイベントのことを自然実験という。</summary></entry><entry><title type="html">SEMとは</title><link href="http://localhost:4000/2021/02/23/SEM.html" rel="alternate" type="text/html" title="SEMとは" /><published>2021-02-23T00:00:00+09:00</published><updated>2021-02-23T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/23/SEM</id><content type="html" xml:base="http://localhost:4000/2021/02/23/SEM.html"></content><author><name></name></author><category term="statistics" /><summary type="html"></summary></entry><entry><title type="html">grfパッケージを使ってみる</title><link href="http://localhost:4000/2021/02/22/how-to-use-grf.html" rel="alternate" type="text/html" title="grfパッケージを使ってみる" /><published>2021-02-22T00:00:00+09:00</published><updated>2021-02-22T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/22/how-to-use-grf</id><content type="html" xml:base="http://localhost:4000/2021/02/22/how-to-use-grf.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#grfパッケージとは&quot; id=&quot;markdown-toc-grfパッケージとは&quot;&gt;grfパッケージとは&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#generalized-random-forest-とは&quot; id=&quot;markdown-toc-generalized-random-forest-とは&quot;&gt;Generalized Random Forest とは&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#使ってみる&quot; id=&quot;markdown-toc-使ってみる&quot;&gt;使ってみる&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#設定1-アウトカム介入ともに2値変数のとき&quot; id=&quot;markdown-toc-設定1-アウトカム介入ともに2値変数のとき&quot;&gt;設定1 (アウトカム、介入ともに2値変数のとき)&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#シミュレーション&quot; id=&quot;markdown-toc-シミュレーション&quot;&gt;シミュレーション&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#設定2-アウトカムが2値変数-介入が連続変数&quot; id=&quot;markdown-toc-設定2-アウトカムが2値変数-介入が連続変数&quot;&gt;設定2 (アウトカムが2値変数, 介入が連続変数)&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#シミュレーション-1&quot; id=&quot;markdown-toc-シミュレーション-1&quot;&gt;シミュレーション&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#介入が連続変数のときに何を計算しているか&quot; id=&quot;markdown-toc-介入が連続変数のときに何を計算しているか&quot;&gt;介入が連続変数のときに何を計算しているか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考文献&quot; id=&quot;markdown-toc-参考文献&quot;&gt;参考文献&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;grfパッケージとは&quot;&gt;grfパッケージとは&lt;/h1&gt;
+
+&lt;p&gt;個別因果効果を推定できる手法であるGenelarized Random Forestを実装したRの&lt;a href=&quot;https://grf-labs.github.io/grf&quot;&gt;ライブラリ&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h1 id=&quot;generalized-random-forest-とは&quot;&gt;Generalized Random Forest とは&lt;/h1&gt;
+
+&lt;p&gt;Random forestを用いて、擬似的なpropensity scoreを推定することで 個別因果効果を推定する手法。propensity scoreの明示的な推定が不要で共変量のみ指定すれば良いのが特徴。
+手法の解説は ill-identified さんのブログ &lt;a href=&quot;https://ill-identified.hatenablog.com/entry/2018/08/02/004625&quot;&gt;[計量経済学] [機械学習] Generalized Random Forest (GRF) について&lt;/a&gt; が詳しいので ご参照のこと。&lt;/p&gt;
+
+&lt;h1 id=&quot;使ってみる&quot;&gt;使ってみる&lt;/h1&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# インストール&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install.package&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;grf&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;設定1-アウトカム介入ともに2値変数のとき&quot;&gt;設定1 (アウトカム、介入ともに2値変数のとき)&lt;/h2&gt;
+
+&lt;p&gt;以下のような設定で推定してみる。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+&amp; X_1\sim\mathcal{N}(0,1)\\
+&amp; X_2\sim\mathrm{Uniform}(0,1)\\
+&amp;W\sim \begin{cases}
+\mathrm{Bernoulli}(0.75) &amp;&amp; X_1\geq 0\\
+\mathrm{Bernoulli}(0.25) &amp;&amp; X_1 &lt; 0
+\end{cases}
+\\
+&amp;Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 \geq 0)+0.2X_2)
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;$\mu_{w}(x):=\mathbb{E}[Y(w)\mid X=x]$とすると、CATEは$\tau(x):=\mu_{1}(x)-\mu_0(x)$&lt;/p&gt;
+
+&lt;p&gt;となる。上の設定で計算をすると&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+\mu_1(x)
+&amp;=\mathbb{E}[Y(1)|X_1=x_1, X_2=x_2]\\
+&amp;= 1\times(0.5\times 1 \times \mathbb{I}[x_1\geq 0]+0.2x_2) + 0 \times [1-(0.5\times 1 \times \mathbb{I}[x_1\geq 0]+0.2x_2)]\\
+&amp;=0.5\mathbb{I}[x_1\geq 0] + 0.2x_2\\
+\mu_0(x)
+&amp;=\mathbb{E}[Y(0)|X_1=x_1, X_2=x_2]\\
+&amp;= 1\times(0.2x_2) + 0 \times [1-(0.2x_2)]\\
+&amp;=0.2x_2\\
+\because \tau(x)&amp;= 0.5\mathbb{I}(x_1 \geq 0)
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;シミュレーション&quot;&gt;シミュレーション&lt;/h3&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# データの生成&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rnorm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;runif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length.out&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length.out&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# causal_forestを学習させる。&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rbinom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rbinom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rbinom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.forest&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;causal_forest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# 予測&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.forest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylim&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;x_1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;tau&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;l&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lty&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;予測結果のプロットが以下である。赤の破線が正解なので、よく推定できていることがわかる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/grf_setting_1.png&quot; alt=&quot;setting_1&quot; /&gt;
+&lt;strong&gt;設定1の推定結果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;設定2-アウトカムが2値変数-介入が連続変数&quot;&gt;設定2 (アウトカムが2値変数, 介入が連続変数)&lt;/h2&gt;
+
+&lt;p&gt;介入$W$を連続変数の確率分布(対数正規分布)に置き換えてみる。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+&amp; X_1\sim\mathcal{N}(0,1)\\
+&amp; X_2\sim\mathrm{Uniform}(0,1)\\
+&amp;W\sim \min(\mathrm{LogNormal}(X_1, 1), 1)
+\\
+&amp;Y\sim\mathrm{Bernoulli}(0.5\times W\times\mathbb{I}(X_1 \geq 0)+0.2X_2)
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;$W$の分布が異なるだけなので、$\tau(x)$は設定1と同じになる。&lt;/p&gt;
+
+&lt;h3 id=&quot;シミュレーション-1&quot;&gt;シミュレーション&lt;/h3&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Generate data.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rnorm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;runif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length.out&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length.out&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Train a causal forest.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vapply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rlnorm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FUN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rbinom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.forest&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;causal_forest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;W&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Estimate treatment effects for the test sample.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.forest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylim&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tau.hat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;x_1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;tau&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;l&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lty&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;予測結果のプロットが以下である。設定1よりは正解からずれてしまったが、ある程度正しく推定できている。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/grf_setting_2.png&quot; alt=&quot;setting_2&quot; /&gt;
+&lt;strong&gt;設定2の推定結果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;介入が連続変数のときに何を計算しているか&quot;&gt;介入が連続変数のときに何を計算しているか&lt;/h1&gt;
+
+&lt;p&gt;介入が連続変数のとき、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tau(x)&lt;/code&gt;は何を計算しているのだろうか。&lt;a href=&quot;https://cran.r-project.org/web/packages/grf/grf.pdf&quot;&gt;Rパッケージのドキュメント&lt;/a&gt;の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;causal_forest&lt;/code&gt;の項をみると、&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When W is continuous, we effectively estimate an average partial effect 
+Cov[Y, W | X = x] / Var[W | X = x], and interpret it as a treatment effect given unconfoundedness.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;と書いてあるので、average partial effect を推定しているらしい。&lt;/p&gt;
+
+&lt;p&gt;同じ質問が&lt;a href=&quot;https://github.com/grf-labs/grf/issues/409&quot;&gt;grfのissue&lt;/a&gt;に合った。回答としては、&lt;a href=&quot;https://arxiv.org/pdf/1902.07409.pdf&quot;&gt;Estimating Treatment Effects with Random Forests&lt;/a&gt; の式8の
+$\hat{e}^{(i)}(x)(1-\hat{e}^{(i)}(x))$を$W_i$の条件付き分散$\mathop{\mathsf{Var}}[W_i|X_i]$で置き換えたものを計算しているらしい。&lt;/p&gt;
+
+&lt;p&gt;ちなみに式8は以下である。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{array}{l}
+\hat{\tau}_{j}=\frac{1}{n_{j}} \sum_{\left\{i: A_{i}=j\right\}} \widehat{\Gamma}_{i}, \quad \hat{\tau}=\frac{1}{J} \sum_{j=1}^{J} \hat{\tau}_{j}, \quad \hat{\sigma}^{2}=\frac{1}{J(J-1)} \sum_{j=1}^{J}\left(\hat{\tau}_{j}-\hat{\tau}\right)^{2} \\
+\widehat{\Gamma}_{i}=\hat{\tau}^{(-i)}\left(X_{i}\right)+\frac{W_{i}-\hat{e}^{(-i)}\left(X_{i}\right)}{\hat{e}^{(-i)}\left(X_{i}\right)\left(1-\hat{e}^{(-i)}\left(X_{i}\right)\right)}\left(Y_{i}-\hat{m}^{(-i)}\left(X_{i}\right)-\left(W_{i}-\hat{e}^{(-i)}\left(X_{i}\right)\right) \hat{\tau}^{(-i)}\left(X_{i}\right)\right)
+\end{array}&lt;/script&gt;
+
+&lt;p&gt;$W_i$から条件付き平均を引いて条件付き分散で割ることになるので、介入が連続変数のときは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tau(x)&lt;/code&gt;は$W_i$を標準化したときの介入効果の係数を計算していると考えれば良さそうである。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ill-identified.hatenablog.com/entry/2018/08/02/004625&quot;&gt;[計量経済学] [機械学習] Generalized Random Forest (GRF) について&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/tomoshige_n/causal-inference-and-data-analysis&quot;&gt;統計的因果推論とデータ解析 / causal-inference-and-data-analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="statistics" /><summary type="html"></summary></entry><entry><title type="html">操作変数法について</title><link href="http://localhost:4000/2021/02/21/instrumental-variable.html" rel="alternate" type="text/html" title="操作変数法について" /><published>2021-02-21T00:00:00+09:00</published><updated>2021-02-21T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/21/instrumental-variable</id><content type="html" xml:base="http://localhost:4000/2021/02/21/instrumental-variable.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#操作変数とはなにか&quot; id=&quot;markdown-toc-操作変数とはなにか&quot;&gt;操作変数とはなにか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#最適な操作変数&quot; id=&quot;markdown-toc-最適な操作変数&quot;&gt;最適な操作変数&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#共変量調整との関係&quot; id=&quot;markdown-toc-共変量調整との関係&quot;&gt;共変量調整との関係&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考文献&quot; id=&quot;markdown-toc-参考文献&quot;&gt;参考文献&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;操作変数とはなにか&quot;&gt;操作変数とはなにか&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://scholar.harvard.edu/imbens/publications/interpretation-instrumental-variables-estimators-simultaneous-equations-models-a&quot;&gt;Angrist, Graddy,
+and Imbens [2000]&lt;/a&gt;
+にある魚の市場の例をもとに説明をする。&lt;/p&gt;
+
+&lt;p&gt;魚の価格と魚の需要の関係を調査したいというような問題を考える。ある日$i$の魚の価格を$W_i$、魚の需要を$Y_i$とする。価格と需要が独立であるとは考えにくいので( $Y_i \perp W_i$ ではない)、unconfoundnessはそのままでは成り立たない。&lt;/p&gt;
+
+&lt;p&gt;そこで、その日の天候$Z_i\in\mathbb{R}$を考える(漁日和かどうかを数値化したスコアみたいなものだと仮定する)。&lt;/p&gt;
+
+&lt;p&gt;嵐の日は魚を獲ることが難しくなるので、魚の価格は上がりやすく、逆に晴天の日は魚を獲りやすいので魚の価格は下がりやすいと考えられる。よって$W_i$と$Z_i$は相関していると考えられる。&lt;/p&gt;
+
+&lt;p&gt;魚の需要と天候については一般的に関係ないと考えられるので(次の日が嵐なので、魚がより食べたくなるみたいな関係はおそらくない)、$Y_i$と$Z_i$は無相関と考えられる。&lt;/p&gt;
+
+&lt;p&gt;そこで、このような気持ちを反映して次のようなモデルを仮定する。&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+&amp; Y_i = \alpha + W_i\tau + \varepsilon_i,\quad\varepsilon_i\perp Z_i\\
+&amp; W_i = Z_i\gamma + \eta_i
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;$\tau$が魚の価格に対して、需要に与える影響を表すパラメータである。このモデルを正しいとすると、魚の価格と魚の需要の関係を調査したいという問題は$\tau$ をデータから推定したいという問題に帰着させることができる。&lt;/p&gt;
+
+&lt;p&gt;いま、$\varepsilon_i\perp Z_i$であることから&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathop{\mathsf{Cov}}[Y_i, Z_i] = \mathop{\mathsf{Cov}}[W_i\tau + \varepsilon_i, Z_i] = \tau\mathop{\mathsf{Cov}}[W_i, Z_i]&lt;/script&gt;
+
+&lt;p&gt;の関係が成り立つ。&lt;/p&gt;
+
+&lt;p&gt;したがって、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\tau = \frac{\mathop{\mathsf{Cov}}[Y_i, Z_i]}{\mathop{\mathsf{Cov}}[W_i, Z_i]}&lt;/script&gt;
+
+&lt;p&gt;となる。このように$Z_i$を介することで、$Y_i$と$W_i$にunconfoudnessが成り立たない状況でも $\tau$ を推定できる状況になっている(識別可能になっている)。このような変数 $Z_i$ のことを操作変数という。&lt;/p&gt;
+
+&lt;div class=&quot;definition&quot;&gt;
+&lt;div class=&quot;box-title&quot;&gt;操作変数の定義&lt;/div&gt;
+アウトカム$Y_i$に関して外生的($\varepsilon_i\perp Z_i$)かつ$\mathop{\mathsf{Cov}}[W_i, Z_i]\neq 0$であるような変数を操作変数という。
+&lt;/div&gt;
+
+&lt;p&gt;上のモデルの例のように、$Z_i$は$W_i$を通じてのみ$Y_i$に影響を与えている。この条件をexclusion restriction という。&lt;/p&gt;
+
+&lt;h1 id=&quot;最適な操作変数&quot;&gt;最適な操作変数&lt;/h1&gt;
+
+&lt;p&gt;上の例では操作変数$Z_i$の値域は$\mathbb{R}$であったが、操作変数の値域が一般の集合$\mathcal{Z}$であるような状況を考える。$\mathcal{Z}$としては例えば適当な $\mathbb{R}^n$の部分集合などを想定している。&lt;/p&gt;
+
+&lt;p&gt;このような状況でも上の例と同様の議論により$\mathop{\mathsf{Cov}}[W_i, w(Z_i)]\neq 0$ であるような関数 $w:\mathcal{Z}\to\mathbb{R}$ について、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\tau = \frac{\mathop{\mathsf{Cov}}[Y_i, w(Z_i)]}{\mathop{\mathsf{Cov}}[W_i, w(Z_i)]}&lt;/script&gt;
+
+&lt;p&gt;を成立させることができる。ある$w$を指定することで、上式の共分散の一致推定量を代入した$\tau$の推定量$\tau_w$を考えることができる。
+このような $w$ の候補は複数あるのでどの関数$w$を選ぶかという問題が生じるが、$n(\tau-\hat{\tau}_w)$の漸近分散が最も小さくなるような推定量を考えることで、&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;w^\ast \propto \mathbb{E}[W_i|Z_i=z]&lt;/script&gt;
+
+&lt;p&gt;という解が導かれる。つまり最適な関数$w^\ast$は$W_i$を$Z_i$から最もよく予測する関数の定数倍という条件を満たす。詳しい導出については&lt;a href=&quot;https://web.stanford.edu/~swager/stats361.pdf&quot;&gt;Causal Inference(スタンフォード大学の講義資料, stats361)&lt;/a&gt;を参照のこと。&lt;/p&gt;
+
+&lt;h1 id=&quot;共変量調整との関係&quot;&gt;共変量調整との関係&lt;/h1&gt;
+
+&lt;p&gt;操作変数の仮定は共変量$X_i$についての条件付き独立の設定に拡張可能で、$\epsilon_i \perp \mid X_i$ となる。この設定での詳細な解析については&lt;a href=&quot;https://economics.mit.edu/files/11873&quot;&gt;Abadie [2003]&lt;/a&gt; で行われている。&lt;a href=&quot;https://arxiv.org/abs/1610.01271&quot;&gt;Athey, Tibshirani, and Wager [2019]&lt;/a&gt; では$X_i=x$のときの因果効果$\tau(x)$の推定方法についての手法が提案されている。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://scholar.harvard.edu/imbens/publications/interpretation-instrumental-variables-estimators-simultaneous-equations-models-a&quot;&gt;Angrist, Graddy,
+and Imbens [2000]&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://web.stanford.edu/~swager/stats361.pdf&quot;&gt;Causal Inference(スタンフォード大学の講義資料, stats361)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="github" /><summary type="html"></summary></entry><entry><title type="html">Generalized random forest を理解する</title><link href="http://localhost:4000/2021/02/21/understanding-grf.html" rel="alternate" type="text/html" title="Generalized random forest を理解する" /><published>2021-02-21T00:00:00+09:00</published><updated>2021-02-21T00:00:00+09:00</updated><id>http://localhost:4000/2021/02/21/understanding-grf</id><content type="html" xml:base="http://localhost:4000/2021/02/21/understanding-grf.html">&lt;h1 id=&quot;generalized-random-forest-とは&quot;&gt;Generalized random forest とは&lt;/h1&gt;
+
+&lt;p&gt;Random forestを用いて、propensity scoreを推定することで 個別因果効果を推定できる手法。propensity scoreの明示的な推定が不要で共変量のみ指定すればよいのが特徴。
+手法の解説は ill-identified さんのブログ &lt;a href=&quot;https://ill-identified.hatenablog.com/entry/2018/08/02/004625&quot;&gt;[計量経済学] [機械学習] Generalized Random Forest (GRF) について&lt;/a&gt; が詳しいので ご参照のこと。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ill-identified.hatenablog.com/entry/2018/08/02/004625&quot;&gt;[計量経済学] [機械学習] Generalized Random Forest (GRF) について&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/tomoshige_n/causal-inference-and-data-analysis&quot;&gt;統計的因果推論とデータ解析 / causal-inference-and-data-analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="github" /><summary type="html">Generalized random forest とは</summary></entry></feed>
