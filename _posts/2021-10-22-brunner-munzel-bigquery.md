@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Bigquery+pythonでBrunner-Munzel検定を行う。
+title: BigQuery+pythonでBrunner-Munzel検定を行う。
 tags: [statistics]
 ---
 
@@ -10,8 +10,8 @@ tags: [statistics]
 正規性が成り立たない場合に頑健なノンパラメトリック検定としてはWilcoxon-Mann-Whitney検定が有名ですが、Wilcoxon-Mann-Whitney検定は2つの分布の分散が異なる場合などに頑健でないことが知られています。
 Brunner-Munzel検定は正規性が成り立たず、分散が異なる場合にも適用可能な検定の手法です。
 
-Brunner-Munzel検定ではデータの順位を計算する処理がありますが、データがBigquery上にある場合は順位計算などの重めの処理をBigquery上で処理してしまうのが良いです。
-本記事ではBrunner-Munzel検定をBigquery+pythonで行う方法を紹介します。
+Brunner-Munzel検定ではデータの順位を計算する処理がありますが、データがBigQuery上にある場合は順位計算などの重めの処理をBigQuery上で処理してしまうのが良いです。
+本記事ではBrunner-Munzel検定をBigQuery+pythonで行う方法を紹介します。
 
 # コード
 
@@ -23,7 +23,7 @@ Brunner-Munzel検定ではデータの順位を計算する処理があります
 
 <script src="https://gist.github.com/MAEA2/ae81048a9177a7347d27f50c6af50ef4.js"></script>
 
-上記のクエリをBigqueryで回すと、以下の結果が得られる。
+上記のクエリをBigQueryで回すと、以下の結果が得られる。
 
 | dataset_number | n   | avg_whole_rank     | variance           |
 | -------------- | --- | ------------------ | ------------------ |
