@@ -2,6 +2,7 @@
 layout: post
 title: BigQuery+pythonでBrunner-Munzel検定を行う。
 tags: [statistics]
+thumbnail: "/images/avatar.png"
 ---
 
 # モチベーション
